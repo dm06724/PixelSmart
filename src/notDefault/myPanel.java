@@ -7,11 +7,12 @@ import javax.swing.*;
 
 public class myPanel extends JPanel {
 	
-	private BufferedImage img;
+	public BufferedImage img;
 	
 	public myPanel()
 	{
 		super();
+		img = new BufferedImage(450, 300, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	@Override
@@ -22,7 +23,6 @@ public class myPanel extends JPanel {
 		{
 			g.drawImage(img, 0, 0, null);
 		}
-		g.fill3DRect(0, 0, 64, 64, true);
 	}
 	
 }

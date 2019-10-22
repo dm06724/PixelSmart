@@ -1,5 +1,6 @@
 package notDefault;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,8 +18,8 @@ public class MainWindow extends JFrame {
 	
 	private static int mouseX = 0;
 	private static int mouseY = 0;
-	
-	private static boolean shouldDraw = false;
+
+	private CommandList k = new CommandList();
 	
 	/**
 	 * Launch the application.
@@ -75,7 +76,7 @@ public class MainWindow extends JFrame {
 				// TODO Auto-generated method stub
 				if(e.getButton() == MouseEvent.BUTTON1)
 				{
-					shouldDraw = true;
+					k.addCommand( new PencilTool(3, Color.black));
 				}
 			}
 
@@ -84,7 +85,7 @@ public class MainWindow extends JFrame {
 				// TODO Auto-generated method stub
 				if(e.getButton() == MouseEvent.BUTTON1)
 				{
-					shouldDraw = false;
+					k.addCommand( new StopTool());
 				}
 			}
 
@@ -103,16 +104,13 @@ public class MainWindow extends JFrame {
 
 	public void appLoop()
 	{
-		BasicBrush b = new BasicBrush();
+		
 		while(running())
 		{
 			
 			//do things
-			if(shouldDraw)
-			{
-				b.performAction();
-			}
 			
+			k.update();
 			//render things
 			
 			myP.repaint();

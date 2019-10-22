@@ -7,7 +7,12 @@ import javax.swing.*;
 
 public class myPanel extends JPanel {
 	
-	public BufferedImage img;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private BufferedImage img;
 	
 	public myPanel()
 	{
@@ -25,4 +30,21 @@ public class myPanel extends JPanel {
 		}
 	}
 	
+	public BufferedImage getImage()
+	{
+		return img;
+	}
+	
+	public void setImage(BufferedImage img)
+	{
+		this.img = img;
+	}
+	
+	public BufferedImage copyImage()
+	{
+		ColorModel cm = img.getColorModel();
+		WritableRaster ra = img.copyData(null);
+		
+		return new BufferedImage(cm, ra, img.isAlphaPremultiplied(), null);
+	}
 }

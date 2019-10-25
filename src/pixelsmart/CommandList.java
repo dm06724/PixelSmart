@@ -33,6 +33,10 @@ public class CommandList {
 
 	public void addCommand(Tool c) {
 		listOfCommands.add(c);
+
+		while (listOfCommands.size() > AMOUNT_OF_COMMANDS){
+			listOfCommands.removeFirst();
+		}
 	}
 
 	public void update() {

@@ -5,9 +5,15 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
 public class MainWindow extends JFrame {
@@ -48,6 +54,25 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 
 		myP = new MyPanel();
+
+		JToolBar brushToolbar = new JToolBar("Brushes");
+		JToolBar attributeToolbar = new JToolBar("Tools");
+
+		JButton colorWheelButton = new JButton();
+		colorWheelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color color = JColorChooser.showDialog(myP, "Select Color", Color.BLACK);
+				colorWheelButton.setBackground(color);
+			}
+		});
+
+		JLabel label = new JLabel("Color");
+		attributeToolbar.add(label);
+		attributeToolbar.add(colorWheelButton);
+
+		contentPane.add(attributeToolbar, BorderLayout.NORTH);
+		contentPane.add(brushToolbar, BorderLayout.WEST);
 		contentPane.add(myP, BorderLayout.CENTER);
 
 		myP.addMouseMotionListener(new MouseMotionListener() {
@@ -79,7 +104,7 @@ public class MainWindow extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					k.addCommand(new PencilTool(3, Color.black));
+					k.addCommand(new PencilTool(10, Color.black));
 				}
 			}
 

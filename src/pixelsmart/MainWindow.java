@@ -2,11 +2,11 @@ package pixelsmart;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -17,43 +17,26 @@ import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
 public class MainWindow extends JFrame {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -2835920738241308199L;
 	private JPanel contentPane;
-	public static MyPanel myP;
-	private static MainWindow frame;
+	private ImagePanel imagePanel;
+	private static MainWindow currentWindow;
 
-	private static int mouseX = 0;
-	private static int mouseY = 0;
-
-	private CommandList k = new CommandList();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-
-		frame = new MainWindow();
-		frame.setVisible(true);
-
-		frame.appLoop();
-	}
+	private CommandList commands = new CommandList();
 
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+	private MainWindow() {
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 600, 450);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		this.setContentPane(contentPane);
 
-		myP = new MyPanel();
+		imagePanel = new ImagePanel();
 
 		JToolBar brushToolbar = new JToolBar("Brushes");
 		JToolBar attributeToolbar = new JToolBar("Tools");
@@ -62,103 +45,53 @@ public class MainWindow extends JFrame {
 		colorWheelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Color color = JColorChooser.showDialog(myP, "Select Color", Color.BLACK);
+				// TODO
+				Color color = JColorChooser.showDialog(imagePanel, "Select Color", Color.BLACK);
 				colorWheelButton.setBackground(color);
 			}
 		});
 
-		JLabel label = new JLabel("Color");
-		attributeToolbar.add(label);
+		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
 
 		contentPane.add(attributeToolbar, BorderLayout.NORTH);
 		contentPane.add(brushToolbar, BorderLayout.WEST);
-		contentPane.add(myP, BorderLayout.CENTER);
+		contentPane.add(imagePanel, BorderLayout.CENTER);
 
-		myP.addMouseMotionListener(new MouseMotionListener() {
+		imagePanel.addMouseMotionListener(Input.getInstance());
+		imagePanel.addMouseListener(Input.getInstance());
+	}
 
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				// TODO Auto-generated method stub
-				mouseX = e.getX();
-				mouseY = e.getY();
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-				mouseX = e.getX();
-				mouseY = e.getY();
-			}
-
-		});
-		myP.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					k.addCommand(new PencilTool(10, Color.black));
-				}
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					k.addCommand(new StopTool());
-				}
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+	public static synchronized MainWindow getInstance() {
+		if (currentWindow == null) {
+			currentWindow = new MainWindow();
+		}
+		return currentWindow;
 	}
 
 	public void appLoop() {
 
 		while (running()) {
+			// Update
+			commands.update();
 
-			// do things
+			// Render
+			imagePanel.repaint();
 
-			k.update();
-			// render things
-
-			myP.repaint();
+			// Sleep
 			try {
 				Thread.sleep(16);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static int getMouseX() {
-		return mouseX;
-	}
-
-	public static int getMouseY() {
-		return mouseY;
+	public ImagePanel getPanel() {
+		return imagePanel;
 	}
 
 	private boolean running() {
-		// TODO Auto-generated method stub
 		return this.isDisplayable();
 	}
 }

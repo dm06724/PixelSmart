@@ -14,13 +14,19 @@ public class CommandList {
 
 	// Whoever works on this, feel free to change whatever you need. This is just a
 	// template.
-	public static final int AMOUNT_OF_COMMANDS = 20;
-	private int index = 0;
+	private static final int AMOUNT_OF_COMMANDS = 50;
+	private static CommandList instance;
 
 	private LinkedList<Tool> listOfCommands = new LinkedList<Tool>();
+	private Tool current;
 
-	public CommandList() {
+	private CommandList() {
+	}
 
+	public static synchronized CommandList getInstance() {
+		if (instance == null)
+			instance = new CommandList();
+		return instance;
 	}
 
 	public void redo() {
@@ -34,7 +40,7 @@ public class CommandList {
 	public void addCommand(Tool c) {
 		listOfCommands.add(c);
 
-		while (listOfCommands.size() > AMOUNT_OF_COMMANDS){
+		while (listOfCommands.size() > AMOUNT_OF_COMMANDS) {
 			listOfCommands.removeFirst();
 		}
 	}

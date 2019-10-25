@@ -1,14 +1,15 @@
 package pixelsmart;
 
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JFileChooser;
 
-public class Image {
-    private final ArrayList<Layer> layers = new ArrayList<Layer>();
+public class Image implements Iterable<Layer> {
+    private final ArrayList<Layer> layers;
 
     private int activeLayer;
     private int width;
@@ -17,10 +18,14 @@ public class Image {
     protected Image(int width, int height) {
         this.width = width;
         this.height = height;
+
+        this.layers = new ArrayList<Layer>();
+        this.addLayer("Base");
+        setActiveLayer(0);
     }
 
     public Layer getActiveLayer() {
-        return layers.get(activeLayer);
+        return getLayerByIndex(activeLayer);
     }
 
     public void setActiveLayer(Layer layer) {
@@ -35,20 +40,29 @@ public class Image {
         activeLayer = isValidLayerIndex(index) ? index : -1;
     }
 
-    public boolean addLayer(Layer layer) {
-        return layer != null ? layers.add(layer) : false;
+    public boolean addLayer(String name) {
+        return layers.add(new Layer(this, name));
     }
 
-    public boolean removeLayer(String name) {
-        return layers.removeIf(x -> x.getName().equals(name));
+    public boolean addLayer(String name, BufferedImage data) {
+        return layers.add(new Layer(this, name, data));
     }
 
     public boolean removeLayer(Layer layer) {
-        return layers.remove(layer);
+        int index = getLayerIndex(layer);
+        if (index > 0) {
+            layers.remove(layer);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeLayer(String name) {
+        return removeLayer(getLayerByName(name));
     }
 
     public boolean removeLayer(int index) {
-        return isValidLayerIndex(index) && layers.remove(index) != null;
+        return index > 0 && removeLayer(getLayerByIndex(index));
     }
 
     public int getLayerIndex(Layer layer) {
@@ -68,12 +82,12 @@ public class Image {
         return isValidLayerIndex(index) ? layers.get(index) : null;
     }
 
-    public BufferedImage getAggrigateImage() {
+    public BufferedImage getAggregatedImage() {
         BufferedImage combined = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combined.createGraphics();
 
-        for (Layer l : layers){
-            g.drawImage(l.getImage(), l.getX(), l.getY(), null);
+        for (Layer l : layers) {
+            g.drawImage(l.getData(), l.getX(), l.getY(), null);
         }
 
         g.dispose();
@@ -87,12 +101,12 @@ public class Image {
         int result = fileChooser.showSaveDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            ImageExporter.export(getAggrigateImage(), format, file);
+            ImageExporter.export(getAggregatedImage(), format, file);
         }
     }
 
     private boolean isValidLayerIndex(int index) {
-        return index < 0 || index >= layers.size();
+        return index >= 0 && index < layers.size();
     }
 
     public int getWidth() {
@@ -101,5 +115,14 @@ public class Image {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public int layerCount() {
+        return layers.size();
+    }
+
+    @Override
+    public Iterator<Layer> iterator() {
+        return layers.iterator();
     }
 }

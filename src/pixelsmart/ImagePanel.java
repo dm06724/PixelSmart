@@ -18,6 +18,6 @@ public class ImagePanel extends JPanel {
 		if (Project.getCurrent() == null) {
 			return;
 		}
-		g.drawImage(Project.getCurrent().getImage().getAggrigateImage(), 0, 0, null);
+		g.drawImage(Project.getCurrent().getImage().getAggregatedImage(), 0, 0, null);
 	}
 }

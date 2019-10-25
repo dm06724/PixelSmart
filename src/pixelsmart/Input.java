@@ -1,12 +1,16 @@
 package pixelsmart;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
+
 import javax.swing.event.MouseInputAdapter;
 
 public class Input extends MouseInputAdapter {
 
     private int mouseX, mouseY;
     private static Input instance;
+
+    public static Color color = Color.BLACK;
 
     private Input() {
 
@@ -21,22 +25,28 @@ public class Input extends MouseInputAdapter {
     }
 
     @Override
-    public void mouseMoved(MouseEvent event) {
-        mouseX = event.getX();
-        mouseY = event.getY();
+    public void mouseMoved(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            // commands.addCommand(new PencilTool(10, Color.black));
+            CommandList.getInstance().addCommand(new PencilTool(10, color));
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            // commands.addCommand(new StopTool());
+            CommandList.getInstance().addCommand(new StopTool());
         }
     }
 

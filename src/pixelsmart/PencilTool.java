@@ -1,9 +1,8 @@
 package pixelsmart;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.BasicStroke;
 
 public class PencilTool implements Tool {
 
@@ -15,7 +14,6 @@ public class PencilTool implements Tool {
 	private int size = 1;
 
 	private int lastMouseX = -1, lastMouseY = -1;
-	private BufferedImage oldImage = null;
 
 	public PencilTool(int size, Color color) {
 		this.color = color;
@@ -32,7 +30,7 @@ public class PencilTool implements Tool {
 	public void performAction() {
 		// TODO Need a better way of accessing current layer / drawing to it. Maybe
 		// implement facade somehow?
-		Graphics2D g = Project.getCurrent().getImage().getActiveLayer().getImage().createGraphics();
+		Graphics2D g = Project.getCurrent().getImage().getActiveLayer().getData().createGraphics();
 
 		g.setColor(color);
 		g.setStroke(new BasicStroke(size));
@@ -46,8 +44,6 @@ public class PencilTool implements Tool {
 		}
 
 		g.drawLine(lastMouseX, lastMouseY, mx, my);
-
-		// g.fillRect(MainWindow.getMouseX(), MainWindow.getMouseY(), size, size);
 
 		lastMouseX = mx;
 		lastMouseY = my;

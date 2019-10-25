@@ -2,11 +2,6 @@ package pixelsmart;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -22,12 +17,11 @@ public class MainWindow extends JFrame {
 	private ImagePanel imagePanel;
 	private static MainWindow currentWindow;
 
-	private CommandList commands = new CommandList();
-
 	/**
 	 * Create the frame.
 	 */
 	private MainWindow() {
+		this.setTitle("PixelSmart");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(100, 100, 600, 450);
 
@@ -42,17 +36,38 @@ public class MainWindow extends JFrame {
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
-		colorWheelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-				Color color = JColorChooser.showDialog(imagePanel, "Select Color", Color.BLACK);
-				colorWheelButton.setBackground(color);
-			}
+		colorWheelButton.addActionListener(e -> {
+			Color color = JColorChooser.showDialog(null, "Select Color", Color.BLACK);
+			colorWheelButton.setBackground(color);
+			Input.color = color;
+		});
+
+		JButton createProjectButton = new JButton("New Project");
+		createProjectButton.addActionListener(e -> Project.createNew(600, 450));
+
+		JButton addLayerButton = new JButton("Add Layer");
+		addLayerButton.addActionListener(e -> {
+			Image image = Project.getCurrent().getImage();
+			image.addLayer(image.layerCount() + "");
+		});
+
+		JLabel layerLabel = new JLabel("Layer");
+
+		JButton nextLayerButton = new JButton("Next Layer");
+		nextLayerButton.addActionListener(e -> {
+			Image img = Project.getCurrent().getImage();
+			int index = img.getActiveLayer().getIndex();
+
+			img.setActiveLayer((index + 1) % img.layerCount());
+			layerLabel.setText(img.getActiveLayer().getName());
 		});
 
 		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
+		attributeToolbar.add(createProjectButton);
+		attributeToolbar.add(addLayerButton);
+		attributeToolbar.add(nextLayerButton);
+		attributeToolbar.add(layerLabel);
 
 		contentPane.add(attributeToolbar, BorderLayout.NORTH);
 		contentPane.add(brushToolbar, BorderLayout.WEST);
@@ -69,11 +84,10 @@ public class MainWindow extends JFrame {
 		return currentWindow;
 	}
 
-	public void appLoop() {
-
+	public void run() {
 		while (running()) {
 			// Update
-			commands.update();
+			CommandList.getInstance().update();
 
 			// Render
 			imagePanel.repaint();

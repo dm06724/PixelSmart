@@ -37,10 +37,16 @@ public class MainWindow extends JFrame {
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
+		
+		Input.setColorButton(colorWheelButton);
+		
 		colorWheelButton.addActionListener(e -> {
 			Color color = JColorChooser.showDialog(null, "Select Color", Color.BLACK);
-			colorWheelButton.setBackground(color);
-			Input.color = color;
+			
+			Input.setColor(color);
+			//done through the above function
+			//colorWheelButton.setBackground(color);
+			//Input.color = color;
 		});
 
 		JButton createProjectButton = new JButton("New Project");

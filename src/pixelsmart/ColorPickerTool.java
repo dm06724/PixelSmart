@@ -10,8 +10,8 @@ public class ColorPickerTool implements Tool {
 	
 	public ColorPickerTool()
 	{
-		oldColor = Input.color;
-		System.out.println("OLD: "+oldColor + ", "+oldColor.getAlpha());
+		oldColor = Input.getColor();
+		//System.out.println("OLD: "+oldColor + ", "+oldColor.getAlpha());
 	}
 	
 	@Override
@@ -27,26 +27,26 @@ public class ColorPickerTool implements Tool {
 		int blueComponent = (intColor>>0) & 0xFF;
 		newColor = new Color(redComponent, greenComponent, blueComponent, alphaComponent);
 		
-		Input.color = newColor;
+		Input.setColor(newColor);
 	}
 
 	@Override
 	public void undoAction() {
 		// TODO Auto-generated method stub
-		Input.color = oldColor;
+		Input.setColor(oldColor);
 	}
 
 	@Override
 	public void redoAction() {
 		// TODO Auto-generated method stub
-		Input.color = newColor;
+		Input.setColor(newColor);
 	}
 
 	@Override
 	public void finishAction() {
 		// TODO Auto-generated method stub
 		// Not needed
-		System.out.println("NEW: "+newColor + ", "+newColor.getAlpha());
+		//System.out.println("NEW: "+newColor + ", "+newColor.getAlpha());
 	}
 
 }

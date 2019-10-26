@@ -3,6 +3,7 @@ package pixelsmart;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.event.MouseInputAdapter;
 
 public class Input extends MouseInputAdapter {
@@ -10,7 +11,8 @@ public class Input extends MouseInputAdapter {
     private int mouseX, mouseY;
     private static Input instance;
 
-    public static Color color = Color.BLACK;
+    private static Color color = Color.BLACK;
+    private static JButton colorWheelButton;
 
     private Input() {
 
@@ -72,5 +74,22 @@ public class Input extends MouseInputAdapter {
 
     public static int getMouseY() {
         return getInstance().mouseY;
+    }
+    
+    public static void setColor(Color c)
+    {
+    	color = c;
+    	if(colorWheelButton!=null)
+    		colorWheelButton.setBackground(c);
+    }
+    
+    public static Color getColor()
+    {
+    	return color;
+    }
+    
+    public static void setColorButton(JButton b)
+    {
+    	colorWheelButton = b;
     }
 }

@@ -2,11 +2,8 @@ package pixelsmart;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.swing.JFileChooser;
 
 public class Image implements Iterable<Layer> {
     private final ArrayList<Layer> layers;

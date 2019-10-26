@@ -20,7 +20,6 @@ public class CommandList {
 	private LinkedList<Tool> listOfCommands = new LinkedList<Tool>();
 	
 	private int commandIndex = 0;
-	private Tool current;
 
 	private CommandList() {
 	}

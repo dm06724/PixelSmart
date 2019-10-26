@@ -22,14 +22,12 @@ public class CommandList {
 	public void undo() {
 		if (commandIndex >= 0 && commandIndex < commands.size()) {
 			commands.get(commandIndex--).undo();
-			System.out.println(commandIndex);
 		}
 	}
 
 	public void redo() {
 		if (commandIndex >= -1 && commandIndex < commands.size() - 1) {
 			commands.get(++commandIndex).execute();
-			System.out.println(commandIndex);
 		}
 	}
 

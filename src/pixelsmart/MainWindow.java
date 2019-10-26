@@ -39,6 +39,7 @@ public class MainWindow extends JFrame {
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
+		
 		colorWheelButton.addActionListener(e -> {
 			if (Project.getCurrent() == null) {
 				return;

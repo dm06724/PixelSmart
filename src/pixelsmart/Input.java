@@ -2,6 +2,7 @@ package pixelsmart;
 
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.event.MouseInputAdapter;
 
 public class Input extends MouseInputAdapter {

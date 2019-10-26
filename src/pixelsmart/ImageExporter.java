@@ -5,16 +5,49 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 
 public class ImageExporter {
-    public static void export(BufferedImage image, String format, File file) {
-        if (image == null)
-            return;
 
+    public static boolean exportWithDialog(BufferedImage image, String format) {
+        JFileChooser fileChooser = new JFileChooser();
+
+        int result = fileChooser.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            return export(image, format, file);
+        }
+
+        return false;
+    }
+
+    public static boolean export(BufferedImage image, String format, File file) {
+        if (image == null)
+            return false;
         try {
-            ImageIO.write(image, format, file);
+            return ImageIO.write(image, format, file);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static BufferedImage loadWithDialog(){
+        JFileChooser fileChooser = new JFileChooser();
+
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            return load(file);
+        }
+
+        return null;
+    }
+
+    public static BufferedImage load(File file) {
+        try {
+            return ImageIO.read(file);
+        } catch (IOException e) {
+            return null;
         }
     }
 }

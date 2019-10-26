@@ -56,4 +56,9 @@ public class Project {
         // }
         return false;
     }
+
+    public static synchronized Project load(String path){
+        // TODO load project
+        return null;
+    }
 }

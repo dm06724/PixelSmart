@@ -2,6 +2,7 @@ package pixelsmart;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -51,7 +52,7 @@ public class MainWindow extends JFrame {
 			image.addLayer(image.layerCount() + "");
 		});
 
-		JLabel layerLabel = new JLabel("Layer");
+		JLabel layerLabel = new JLabel("Base");
 
 		JButton nextLayerButton = new JButton("Next Layer");
 		nextLayerButton.addActionListener(e -> {
@@ -62,12 +63,26 @@ public class MainWindow extends JFrame {
 			layerLabel.setText(img.getActiveLayer().getName());
 		});
 
+		JButton loadLayerButton = new JButton("Load Layer");
+		loadLayerButton.addActionListener(e -> {
+			Image img = Project.getCurrent().getImage();
+			BufferedImage data = ImageExporter.loadWithDialog();
+			img.addLayer(img.layerCount() + "", data);
+		});
+
+		JButton exportButton = new JButton("Export");
+		exportButton.addActionListener(e -> {
+			Project.getCurrent().getImage().export();
+		});
+
 		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
 		attributeToolbar.add(createProjectButton);
 		attributeToolbar.add(addLayerButton);
 		attributeToolbar.add(nextLayerButton);
 		attributeToolbar.add(layerLabel);
+		attributeToolbar.add(exportButton);
+		attributeToolbar.add(loadLayerButton);
 
 		contentPane.add(attributeToolbar, BorderLayout.NORTH);
 		contentPane.add(brushToolbar, BorderLayout.WEST);

@@ -40,6 +40,18 @@ public class Image implements Iterable<Layer> {
         activeLayer = isValidLayerIndex(index) ? index : -1;
     }
 
+    public Layer getBaseLayer() {
+        return getLayerByIndex(0);
+    }
+
+    public void setBaseLayer(Layer layer) {
+        if (layer == null)
+            return;
+        if (layers.contains(layer))
+            layers.remove(layer);
+        layers.add(0, layer);
+    }
+
     public boolean addLayer(String name) {
         return layers.add(new Layer(this, name));
     }
@@ -95,14 +107,8 @@ public class Image implements Iterable<Layer> {
         return combined;
     }
 
-    public void exportAs(String format, String path) {
-        JFileChooser fileChooser = new JFileChooser();
-
-        int result = fileChooser.showSaveDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            ImageExporter.export(getAggregatedImage(), format, file);
-        }
+    public void export() {
+        ImageExporter.exportWithDialog(this.getAggregatedImage(), "png");
     }
 
     private boolean isValidLayerIndex(int index) {

@@ -77,4 +77,24 @@ public class Layer {
     public int getIndex() {
         return this.image.getLayerIndex(this);
     }
+
+    public boolean isBaseLayer(){
+        return this.image.getBaseLayer() == this;
+    }
+
+    public boolean isActiveLayer(){
+        return this.image.getActiveLayer() == this;
+    }
+
+    public void setAsBaseLayer(){
+        this.image.setBaseLayer(this);
+    }
+
+    public void setAsActive(){
+        this.image.setActiveLayer(this);
+    }
+
+    public boolean delete(){
+        return this.image.removeLayer(this);
+    }
 }

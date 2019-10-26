@@ -62,11 +62,9 @@ public class CommandList {
 		
 
 		while (listOfCommands.size() > AMOUNT_OF_COMMANDS) {
-			//remove both the stop tool and the general tool
-			//stop tool always comes after any general tool
-			
-			Tool t = listOfCommands.removeFirst(); //general tool
-			listOfCommands.removeFirst(); //stop tool
+			//I am an idiot, so disregard the delete two tools thing here I did.
+			//Both the general and stop tool will end up removed anyway.
+			Tool t = listOfCommands.removeFirst();
 			
 			updateOldLayerData(t);
 		}
@@ -122,7 +120,6 @@ public class CommandList {
 		
 		for(Layer l : Project.getCurrent().getImage())
 		{
-			System.out.println("Updating");
 			l.copyToCurrentData();
 		}
 		

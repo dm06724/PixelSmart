@@ -39,7 +39,15 @@ public class Input extends MouseInputAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            CommandList.getInstance().addCommand(new PencilTool(10, color));
+        	if(Project.getCurrent()!=null)
+        	{
+	        	CommandList.getInstance().addCommand(new PencilTool(10, color));
+	        	//CommandList.getInstance().addCommand(new ColorPickerTool());
+        	}
+        	else
+        	{
+        		System.out.println("You must create a new project first");
+        	}
         }
         
         if(e.getButton() == MouseEvent.BUTTON2) {

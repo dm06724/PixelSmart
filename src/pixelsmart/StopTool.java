@@ -14,4 +14,16 @@ public class StopTool implements Tool {
 
 	}
 
+	@Override
+	public void redoAction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void finishAction() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

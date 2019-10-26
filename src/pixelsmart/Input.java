@@ -41,6 +41,14 @@ public class Input extends MouseInputAdapter {
         if (e.getButton() == MouseEvent.BUTTON1) {
             CommandList.getInstance().addCommand(new PencilTool(10, color));
         }
+        
+        if(e.getButton() == MouseEvent.BUTTON2) {
+        	CommandList.getInstance().undo();
+        }
+        
+        if(e.getButton() == MouseEvent.BUTTON3) {
+        	CommandList.getInstance().redo();
+        }
     }
 
     @Override

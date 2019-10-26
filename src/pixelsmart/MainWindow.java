@@ -34,13 +34,18 @@ public class MainWindow extends JFrame {
 		imagePanel = new ImagePanel();
 
 		JToolBar brushToolbar = new JToolBar("Brushes");
+		brushToolbar.add(new JLabel("Brushes"));
+
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
 		colorWheelButton.addActionListener(e -> {
-			Color color = JColorChooser.showDialog(null, "Select Color", Color.BLACK);
+			if (Project.getCurrent() == null) {
+				return;
+			}
+			Color color = JColorChooser.showDialog(null, "Select Color", Project.getCurrent().getPrimaryBrushColor());
 			colorWheelButton.setBackground(color);
-			Input.color = color;
+			Project.getCurrent().setPrimaryBrushColor(color);
 		});
 
 		JButton createProjectButton = new JButton("New Project");
@@ -75,14 +80,27 @@ public class MainWindow extends JFrame {
 			Project.getCurrent().getImage().export();
 		});
 
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(e -> {
+			CommandList.getInstance().undo();
+		});
+
+		JButton redoButton = new JButton("Redo");
+		redoButton.addActionListener(e -> {
+			CommandList.getInstance().redo();
+		});
+
 		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
 		attributeToolbar.add(createProjectButton);
 		attributeToolbar.add(addLayerButton);
+		attributeToolbar.add(loadLayerButton);
 		attributeToolbar.add(nextLayerButton);
 		attributeToolbar.add(layerLabel);
 		attributeToolbar.add(exportButton);
-		attributeToolbar.add(loadLayerButton);
+		attributeToolbar.add(undoButton);
+		attributeToolbar.add(redoButton);
+		
 
 		contentPane.add(attributeToolbar, BorderLayout.NORTH);
 		contentPane.add(brushToolbar, BorderLayout.WEST);
@@ -99,10 +117,14 @@ public class MainWindow extends JFrame {
 		return currentWindow;
 	}
 
-	public void run() {
+	protected void run() {
 		while (running()) {
 			// Update
-			CommandList.getInstance().update();
+			Input.getInstance().update();
+
+			if (Project.getCurrent() != null) {
+				Project.getCurrent().update();
+			}
 
 			// Render
 			imagePanel.repaint();

@@ -1,6 +1,5 @@
 package pixelsmart;
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 
 import javax.swing.event.MouseInputAdapter;
@@ -8,9 +7,9 @@ import javax.swing.event.MouseInputAdapter;
 public class Input extends MouseInputAdapter {
 
     private int mouseX, mouseY;
+    private boolean mouse1WasPressed, mouse1IsPressed, mouse2WasPressed, mouse2IsPressed;
+    private boolean mouse1Press, mouse2Press;
     private static Input instance;
-
-    public static Color color = Color.BLACK;
 
     private Input() {
 
@@ -22,6 +21,26 @@ public class Input extends MouseInputAdapter {
         }
 
         return instance;
+    }
+
+    protected void update() {
+        mouse1WasPressed = mouse1IsPressed;
+        mouse2WasPressed = mouse2IsPressed;
+
+        mouse1IsPressed = mouse1Press;
+        mouse2IsPressed = mouse2Press;
+    }
+
+    public static boolean getMouseButtonDown(int button) {
+        return getInstance().mouse1IsPressed && !getInstance().mouse1WasPressed;
+    }
+
+    public static boolean getMouseButtonUp(int button) {
+        return !getInstance().mouse1IsPressed && getInstance().mouse1WasPressed;
+    }
+
+    public static boolean getMouseButton(int button) {
+        return getInstance().mouse1IsPressed && getInstance().mouse1WasPressed;
     }
 
     @Override
@@ -39,22 +58,26 @@ public class Input extends MouseInputAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            CommandList.getInstance().addCommand(new PencilTool(10, color));
+            mouse1Press = true;
         }
-        
-        if(e.getButton() == MouseEvent.BUTTON2) {
-        	CommandList.getInstance().undo();
+
+        if (e.getButton() == MouseEvent.BUTTON2) {
+            mouse2Press = true;
         }
-        
-        if(e.getButton() == MouseEvent.BUTTON3) {
-        	CommandList.getInstance().redo();
+
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            // TODO
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            CommandList.getInstance().addCommand(new StopTool());
+            mouse1Press = false;
+        }
+
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mouse2Press = false;
         }
     }
 

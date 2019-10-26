@@ -1,14 +1,19 @@
 package pixelsmart;
 
+import java.awt.Color;
 import javax.swing.JOptionPane;
 
 public class Project {
     private static Project instance;
     private Image image;
-    // TODO maybe add command list here?
+    private Color primaryBrushColor = Color.BLACK;
+    private Color secondaryBrushColor = Color.WHITE;
+    private int brushSize = 10;
+    private Tool tool;
 
     private Project(int imageWidth, int imageHeight) {
         this.image = new Image(imageWidth, imageHeight);
+        this.tool = new PencilTool();
     }
 
     public static Project getCurrent() {
@@ -27,7 +32,8 @@ public class Project {
             case JOptionPane.CANCEL_OPTION:
                 return getCurrent();
             case JOptionPane.YES_OPTION:
-                getCurrent().save();
+                if (!getCurrent().save())
+                    return getCurrent();
                 break;
             case JOptionPane.NO_OPTION:
                 break;
@@ -36,8 +42,52 @@ public class Project {
         return instance = new Project(imageWidth, imageHeight);
     }
 
+    protected void update() {
+        if (tool != null) {
+            if (Input.getMouseButtonDown(0)) {
+                tool.startAction();
+            } else if (Input.getMouseButton(0)) {
+                tool.updateAction();
+            } else if (Input.getMouseButtonUp(0)) {
+                tool.finishAction();
+            }
+        }
+    }
+
     public Image getImage() {
         return this.image;
+    }
+
+    public Color getPrimaryBrushColor() {
+        return this.primaryBrushColor;
+    }
+
+    public Color getSecondaryBrushColor() {
+        return this.secondaryBrushColor;
+    }
+
+    public int getBrushSize() {
+        return this.brushSize;
+    }
+
+    public void setPrimaryBrushColor(Color color) {
+        this.primaryBrushColor = color;
+    }
+
+    public void setSecondaryBrushColor(Color color) {
+        this.secondaryBrushColor = color;
+    }
+
+    public void setBrushSize(int size) {
+        this.brushSize = size;
+    }
+
+    public void setTool(Tool tool) {
+        this.tool = tool;
+    }
+
+    public Tool getTool() {
+        return this.tool;
     }
 
     public boolean save() {
@@ -57,7 +107,7 @@ public class Project {
         return false;
     }
 
-    public static synchronized Project load(String path){
+    public static synchronized Project load(String path) {
         // TODO load project
         return null;
     }

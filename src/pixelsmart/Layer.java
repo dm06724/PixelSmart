@@ -1,5 +1,6 @@
 package pixelsmart;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -42,7 +43,7 @@ public class Layer {
         return data;
     }
 
-    public BufferedImage copyData(){
+    public BufferedImage copyData() {
         ColorModel cm = data.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = data.copyData(null);
@@ -84,5 +85,27 @@ public class Layer {
 
     public boolean delete() {
         return this.image.removeLayer(this);
+    }
+
+    public int getMouseX() {
+        return Input.getMouseX() - this.getX();
+    }
+
+    public int getMouseY() {
+        return Input.getMouseY() - this.getY();
+    }
+
+    public Color getPixelColor(int x, int y) {
+        int intColor = data.getRGB(x, y);
+
+        int alphaComponent = (intColor >> 24) & 0xFF;
+        int redComponent = (intColor >> 16) & 0xFF;
+        int greenComponent = (intColor >> 8) & 0xFF;
+        int blueComponent = (intColor >> 0) & 0xFF;
+        return new Color(redComponent, greenComponent, blueComponent, alphaComponent);
+    }
+
+    public void setPixelColor(int x, int y) {
+        // TODO
     }
 }

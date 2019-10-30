@@ -1,6 +1,8 @@
 package pixelsmart;
 
 import java.awt.Color;
+import java.awt.geom.GeneralPath;
+
 import javax.swing.JOptionPane;
 
 public class Project {
@@ -8,8 +10,9 @@ public class Project {
     private Image image;
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
-    private int brushSize = 10;
+    private int brushSize = 20;
     private Tool tool;
+    private String brushShape;
 
     private Project(int imageWidth, int imageHeight) {
         this.image = new Image(imageWidth, imageHeight);
@@ -71,7 +74,9 @@ public class Project {
     }
 
     public void setPrimaryBrushColor(Color color) {
+    	
         this.primaryBrushColor = color;
+        
     }
 
     public void setSecondaryBrushColor(Color color) {
@@ -88,6 +93,13 @@ public class Project {
 
     public Tool getTool() {
         return this.tool;
+    }
+    
+    public String getBrushShape() {
+    	return brushShape;
+    }
+    public void setBrushShape(String x) {
+    	brushShape = x;
     }
 
     public boolean save() {

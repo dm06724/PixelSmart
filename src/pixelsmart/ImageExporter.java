@@ -12,7 +12,7 @@ public class ImageExporter {
     public static boolean exportWithDialog(BufferedImage image, String format) {
         JFileChooser fileChooser = new JFileChooser();
 
-        int result = fileChooser.showSaveDialog(null);
+        int result = fileChooser.showSaveDialog(MainWindow.getInstance());
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             return export(image, format, file);
@@ -34,7 +34,7 @@ public class ImageExporter {
     public static BufferedImage loadWithDialog(){
         JFileChooser fileChooser = new JFileChooser();
 
-        int result = fileChooser.showOpenDialog(null);
+        int result = fileChooser.showOpenDialog(MainWindow.getInstance());
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             return load(file);

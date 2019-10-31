@@ -1,24 +1,20 @@
 package pixelsmart;
 
-import java.awt.Color;
-
 public class PaintBucketTool implements Tool {
 
     @Override
     public void startAction() {
-        // TODO Auto-generated method stub
-
+        // not needed
     }
 
     @Override
     public void updateAction() {
-        // TODO Auto-generated method stub
-
+        // not needed
     }
 
     @Override
     public void finishAction() {
-        // TODO Auto-generated method stub
+        // TODO
         // int mx = Input.getMouseX();
         // int my = Input.getMouseY();
 

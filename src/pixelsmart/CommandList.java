@@ -1,6 +1,6 @@
 package pixelsmart;
 
-import java.util.*;
+import java.util.LinkedList;
 
 public class CommandList {
 	private static final int AMOUNT_OF_COMMANDS = 50;

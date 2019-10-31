@@ -2,12 +2,12 @@ package pixelsmart;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
-		
+
 		colorWheelButton.addActionListener(e -> {
 			if (Project.getCurrent() == null) {
 				return;
@@ -49,66 +49,22 @@ public class MainWindow extends JFrame {
 			Project.getCurrent().setPrimaryBrushColor(color);
 		});
 
-		JButton createProjectButton = new JButton("New Project");
-		createProjectButton.addActionListener(e -> Project.createNew(600, 450));
 
-		JButton addLayerButton = new JButton("Add Layer");
-		addLayerButton.addActionListener(e -> {
-			Image image = Project.getCurrent().getImage();
-			image.addLayer(image.layerCount() + "");
-		});
-
-		JLabel layerLabel = new JLabel("Base");
-
-		JButton nextLayerButton = new JButton("Next Layer");
-		nextLayerButton.addActionListener(e -> {
-			Image img = Project.getCurrent().getImage();
-			int index = img.getActiveLayer().getIndex();
-
-			img.setActiveLayer((index + 1) % img.layerCount());
-			layerLabel.setText(img.getActiveLayer().getName());
-		});
-
-		JButton loadLayerButton = new JButton("Load Layer");
-		loadLayerButton.addActionListener(e -> {
-			Image img = Project.getCurrent().getImage();
-			BufferedImage data = ImageExporter.loadWithDialog();
-			img.addLayer(img.layerCount() + "", data);
-		});
-
-		JButton exportButton = new JButton("Export");
-		exportButton.addActionListener(e -> {
-			Project.getCurrent().getImage().export();
-		});
-
-		JButton undoButton = new JButton("Undo");
-		undoButton.addActionListener(e -> {
-			CommandList.getInstance().undo();
-		});
-
-		JButton redoButton = new JButton("Redo");
-		redoButton.addActionListener(e -> {
-			CommandList.getInstance().redo();
-		});
 
 		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
-		attributeToolbar.add(createProjectButton);
-		attributeToolbar.add(addLayerButton);
-		attributeToolbar.add(loadLayerButton);
-		attributeToolbar.add(nextLayerButton);
-		attributeToolbar.add(layerLabel);
-		attributeToolbar.add(exportButton);
-		attributeToolbar.add(undoButton);
-		attributeToolbar.add(redoButton);
-		
 
-		contentPane.add(attributeToolbar, BorderLayout.NORTH);
-		contentPane.add(brushToolbar, BorderLayout.WEST);
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(new FileMenu());
+		menuBar.add(new EditMenu());
+		menuBar.add(new LayerMenu());
+
+		LayerList layerList = new LayerList();
+
+		contentPane.add(attributeToolbar, BorderLayout.SOUTH);
+		contentPane.add(layerList, BorderLayout.EAST);
 		contentPane.add(imagePanel, BorderLayout.CENTER);
-
-		imagePanel.addMouseMotionListener(Input.getInstance());
-		imagePanel.addMouseListener(Input.getInstance());
+		contentPane.add(menuBar, BorderLayout.NORTH);
 	}
 
 	public static synchronized MainWindow getInstance() {

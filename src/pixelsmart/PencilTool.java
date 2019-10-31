@@ -35,7 +35,7 @@ public class PencilTool implements Tool {
 
 	@Override
 	public void finishAction() {
-		Layer layer = Project.getCurrent().getImage().getActiveLayer();
+		Layer layer = Image.getCurrent().getActiveLayer();
 		BufferedImage newData = layer.copyData();
 		Graphics2D g = newData.createGraphics();
 

@@ -15,9 +15,9 @@ public class ImagePanel extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		g.clearRect(0, 0, this.getWidth(), this.getHeight());
-		if (Project.getCurrent() == null) {
+		if (Image.getCurrent() == null) {
 			return;
 		}
-		g.drawImage(Project.getCurrent().getImage().getAggregatedImage(), 0, 0, null);
+		g.drawImage(Image.getCurrent().getAggregatedData(), 0, 0, null);
 	}
 }

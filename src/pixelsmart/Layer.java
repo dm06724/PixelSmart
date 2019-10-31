@@ -14,12 +14,18 @@ public class Layer {
     protected Layer(Image image, String name) {
         this.name = name;
         this.image = image;
-        this.data = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        this.clear();
     }
 
     protected Layer(Image image, String name, BufferedImage data) {
-        this(image, name);
-        this.data = data;
+        this.name = name;
+        this.image = image;
+
+        if (data != null) {
+            this.clear();
+        } else {
+            this.setData(data);
+        }
     }
 
     protected Layer(Image image, String name, BufferedImage data, int x, int y) {
@@ -50,6 +56,10 @@ public class Layer {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
+    public void clear() {
+        this.data = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    }
+
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
@@ -63,8 +73,24 @@ public class Layer {
         return this.y;
     }
 
+    public String toString() {
+        return this.name;
+    }
+
+    public void setIndex(int index) {
+        this.image.setLayerIndex(this, index);
+    }
+
     public int getIndex() {
         return this.image.getLayerIndex(this);
+    }
+
+    public void moveUp() {
+        this.setIndex(this.getIndex() + 1);
+    }
+
+    public void moveDown() {
+        this.setIndex(this.getIndex() - 1);
     }
 
     public boolean isBaseLayer() {

@@ -13,7 +13,7 @@ public class Project {
 
     private Project(int imageWidth, int imageHeight) {
         this.image = new Image(imageWidth, imageHeight);
-        this.tool = new PencilTool();
+        this.tool = new MoveTool();
     }
 
     public static Project getCurrent() {

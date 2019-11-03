@@ -1,13 +1,17 @@
 package pixelsmart;
 
+import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+
 public class LineTool implements Tool {
 
     private int startMX, startMY;
 
     @Override
     public void startAction() {
-        startMX = Input.getMouseX();
-        startMY = Input.getMouseY();
+        Layer layer = Image.getCurrent().getActiveLayer();
+        startMX = layer.getMouseX();
+        startMY = layer.getMouseY();
     }
 
     @Override
@@ -17,10 +21,20 @@ public class LineTool implements Tool {
 
     @Override
     public void finishAction() {
-        int mx = Input.getMouseX();
-        int my = Input.getMouseY();
+        Image img = Image.getCurrent();
+        Layer layer = img.getActiveLayer();
 
-        // Draw line from (startMX, startMY) to (mx, my)
+        int mx = layer.getMouseX();
+        int my = layer.getMouseY();
+
+        BufferedImage newData = layer.copyData();
+
+        Graphics2D g = layer.getData().createGraphics();
+        g.drawLine(startMX, startMY, mx, my);
+        g.dispose();
+
+        UpdateLayerDataCommand command = new UpdateLayerDataCommand(layer, newData);
+        CommandList.getInstance().addCommand(command);
     }
 
 }

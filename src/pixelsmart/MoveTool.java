@@ -1,15 +1,13 @@
 package pixelsmart;
 
-public class MoveTool implements Tool{
+public class MoveTool implements Tool {
 
     private int mouseOffsetX, mouseOffsetY;
 
     @Override
     public void startAction() {
-        // TODO Auto-generated method stub
-
-        int layerX = Project.getCurrent().getImage().getActiveLayer().getX();
-        int layerY = Project.getCurrent().getImage().getActiveLayer().getY();
+        int layerX = Image.getCurrent().getActiveLayer().getX();
+        int layerY = Image.getCurrent().getActiveLayer().getY();
 
         mouseOffsetX = layerX - Input.getMouseX();
         mouseOffsetY = layerY - Input.getMouseY();
@@ -17,12 +15,16 @@ public class MoveTool implements Tool{
 
     @Override
     public void updateAction() {
-        Project.getCurrent().getImage().getActiveLayer().setPosition(Input.getMouseX() + mouseOffsetX, Input.getMouseY() + mouseOffsetY);
+        Layer layer = Image.getCurrent().getActiveLayer();
+
+        int lx = Input.getMouseX() + mouseOffsetX;
+        int ly = Input.getMouseY() + mouseOffsetY;
+
+        layer.setPosition(lx, ly);
     }
 
     @Override
     public void finishAction() {
-        // TODO Auto-generated method stub
 
     }
 

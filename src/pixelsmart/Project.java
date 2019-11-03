@@ -1,6 +1,8 @@
 package pixelsmart;
 
 import java.awt.Color;
+import java.io.File;
+
 import javax.swing.JOptionPane;
 
 public class Project {
@@ -8,8 +10,9 @@ public class Project {
     private Image image;
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
-    private int brushSize = 10;
+    private int brushSize = 20;
     private Tool tool;
+    private String brushShape;
 
     private Project(int imageWidth, int imageHeight) {
         this.image = new Image(imageWidth, imageHeight);
@@ -23,16 +26,16 @@ public class Project {
     public static synchronized Project createNew(int imageWidth, int imageHeight) {
         if (getCurrent() != null) {
             // Prompt to save current project
-            int result = JOptionPane.showOptionDialog(null, "Do you want to save your current project?",
-                    "Save Current Project?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
-                    null);
+            int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
+                    "Do you want to save your current project?", "Save Current Project?",
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             switch (result) {
             default:
             case JOptionPane.CLOSED_OPTION:
             case JOptionPane.CANCEL_OPTION:
                 return getCurrent();
             case JOptionPane.YES_OPTION:
-                if (!getCurrent().save())
+                if (!getCurrent().save(null))
                     return getCurrent();
                 break;
             case JOptionPane.NO_OPTION:
@@ -71,7 +74,9 @@ public class Project {
     }
 
     public void setPrimaryBrushColor(Color color) {
+
         this.primaryBrushColor = color;
+
     }
 
     public void setSecondaryBrushColor(Color color) {
@@ -90,7 +95,15 @@ public class Project {
         return this.tool;
     }
 
-    public boolean save() {
+    public String getBrushShape() {
+        return brushShape;
+    }
+
+    public void setBrushShape(String x) {
+        brushShape = x;
+    }
+
+    public boolean save(File file) {
         // TODO serialize all project data somehow
         // layers, brush size, brush colors, etc.
 
@@ -107,7 +120,7 @@ public class Project {
         return false;
     }
 
-    public static synchronized Project load(String path) {
+    public static synchronized Project load(File file) {
         // TODO load project
         return null;
     }

@@ -2,10 +2,15 @@ package pixelsmart;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.Predicate;
+
+import javax.swing.JOptionPane;
 
 public class Image implements Iterable<Layer> {
+
     private final ArrayList<Layer> layers;
 
     private int activeLayer;
@@ -21,6 +26,10 @@ public class Image implements Iterable<Layer> {
         setActiveLayer(0);
     }
 
+    public static Image getCurrent() {
+        return Project.getCurrent() != null ? Project.getCurrent().getImage() : null;
+    }
+
     public Layer getActiveLayer() {
         return getLayerByIndex(activeLayer);
     }
@@ -30,7 +39,7 @@ public class Image implements Iterable<Layer> {
     }
 
     public void setActiveLayer(String name) {
-        activeLayer = getLayerIndex(getLayerByName(name));
+        setActiveLayer(getLayerByName(name));
     }
 
     public void setActiveLayer(int index) {
@@ -50,11 +59,23 @@ public class Image implements Iterable<Layer> {
     }
 
     public boolean addLayer(String name) {
-        return layers.add(new Layer(this, name));
+        if (name == null || name.isBlank() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
+            return false;
+        }
+        boolean success = layers.add(new Layer(this, name));
+        LayerList.instance.updateList();
+        LayerList.instance.setSelectedIndex(activeLayer);
+        return success;
     }
 
     public boolean addLayer(String name, BufferedImage data) {
-        return layers.add(new Layer(this, name, data));
+        if (name == null || name.isBlank() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
+            return false;
+        }
+        boolean success = layers.add(new Layer(this, name, data));
+        LayerList.instance.updateList();
+        LayerList.instance.setSelectedIndex(activeLayer);
+        return success;
     }
 
     public boolean removeLayer(Layer layer) {
@@ -74,6 +95,15 @@ public class Image implements Iterable<Layer> {
         return index > 0 && removeLayer(getLayerByIndex(index));
     }
 
+    public void setLayerIndex(Layer layer, int index) {
+        if (layer == null || !layers.contains(layer) || !isValidLayerIndex(index)) {
+            return;
+        }
+
+        layers.remove(layer);
+        layers.add(index, layer);
+    }
+
     public int getLayerIndex(Layer layer) {
         return layers.indexOf(layer);
     }
@@ -91,7 +121,7 @@ public class Image implements Iterable<Layer> {
         return isValidLayerIndex(index) ? layers.get(index) : null;
     }
 
-    public BufferedImage getAggregatedImage() {
+    public BufferedImage getAggregatedData() {
         BufferedImage combined = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combined.createGraphics();
 
@@ -105,7 +135,7 @@ public class Image implements Iterable<Layer> {
     }
 
     public void export() {
-        ImageExporter.exportWithDialog(this.getAggregatedImage(), "png");
+        ImageExporter.exportWithDialog(this.getAggregatedData(), "png");
     }
 
     private boolean isValidLayerIndex(int index) {
@@ -124,8 +154,25 @@ public class Image implements Iterable<Layer> {
         return layers.size();
     }
 
+    public ArrayList<Layer> getLayers() {
+        return new ArrayList<Layer>(layers);
+    }
+
     @Override
     public Iterator<Layer> iterator() {
         return layers.iterator();
+    }
+
+    public Layer findLayer(Predicate<Layer> pred) {
+        for (Layer layer : layers) {
+            if (pred.test(layer)) {
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    public boolean containsLayer(Predicate<Layer> pred) {
+        return findLayer(pred) != null;
     }
 }

@@ -10,6 +10,7 @@ public class Layer {
     private BufferedImage data;
     private String name;
     private int x, y;
+    private boolean isVisible = true;
 
     protected Layer(Image image, String name) {
         this.name = name;
@@ -21,7 +22,7 @@ public class Layer {
         this.name = name;
         this.image = image;
 
-        if (data != null) {
+        if (data == null) {
             this.clear();
         } else {
             this.setData(data);
@@ -71,6 +72,18 @@ public class Layer {
 
     public int getY() {
         return this.y;
+    }
+
+    public boolean isVisible() {
+        return this.isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.isVisible = visible;
+    }
+
+    public void toggleVisible(){
+        this.isVisible = !this.isVisible;
     }
 
     public String toString() {

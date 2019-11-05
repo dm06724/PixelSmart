@@ -15,7 +15,10 @@ public class Project {
     private String brushShape;
 
     private Project(int imageWidth, int imageHeight) {
+        instance = this;
         this.image = new Image(imageWidth, imageHeight);
+        this.image.addLayer("Base");
+        this.image.setActiveLayer(0);
         this.tool = new PencilTool();
     }
 
@@ -42,7 +45,7 @@ public class Project {
                 break;
             }
         }
-        return instance = new Project(imageWidth, imageHeight);
+        return new Project(imageWidth, imageHeight);
     }
 
     protected void update() {

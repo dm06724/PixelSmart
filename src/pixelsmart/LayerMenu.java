@@ -17,7 +17,7 @@ public class LayerMenu extends JMenu {
 
         // New Layer
         JMenuItem addNewLayer = new JMenuItem("New Layer");
-        addNewLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        addNewLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.SHIFT_DOWN_MASK));
 
         addNewLayer.addActionListener(e -> {
             Image img = Image.getCurrent();
@@ -36,7 +36,7 @@ public class LayerMenu extends JMenu {
 
         // Load Layer
         JMenuItem loadLayerButton = new JMenuItem("Load");
-        loadLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+        loadLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.SHIFT_DOWN_MASK));
 
         loadLayerButton.addActionListener(e -> {
             Image img = Image.getCurrent();
@@ -46,7 +46,7 @@ public class LayerMenu extends JMenu {
 
         // Delete Active Layer
         JMenuItem deleteLayer = new JMenuItem("Remove Layer");
-        deleteLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        deleteLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK));
 
         deleteLayer.addActionListener(e -> {
             Image.getCurrent().getActiveLayer().delete();

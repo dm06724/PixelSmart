@@ -144,7 +144,14 @@ public class Layer {
         return new Color(redComponent, greenComponent, blueComponent, alphaComponent);
     }
 
-    public void setPixelColor(int x, int y) {
+    public void setPixelColor(int x, int y, Color c) {
         // TODO
+    	int intColor = 0;
+    	intColor += (c.getAlpha() << 24);
+    	intColor += (c.getRed() << 16);
+    	intColor += (c.getGreen() << 8);
+    	intColor += (c.getBlue());
+    	
+    	data.setRGB(x, y, intColor);
     }
 }

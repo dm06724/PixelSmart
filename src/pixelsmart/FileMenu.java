@@ -21,6 +21,7 @@ public class FileMenu extends JMenu {
         newImage.addActionListener(e -> {
             // TODO add width height menu
             Project.createNew(500, 500);
+            
         });
 
         // Open Project

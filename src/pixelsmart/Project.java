@@ -1,6 +1,8 @@
 package pixelsmart;
 
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.io.File;
 
 import javax.swing.JOptionPane;
@@ -11,15 +13,14 @@ public class Project {
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
     private int brushSize = 20;
-    private Tool tool;
-    private String brushShape;
+   private Tool tool;
+    //private GeneralPath brushPath;
+	private String brushMode;
 
     private Project(int imageWidth, int imageHeight) {
-        instance = this;
         this.image = new Image(imageWidth, imageHeight);
-        this.image.addLayer("Base");
-        this.image.setActiveLayer(0);
         this.tool = new PencilTool();
+
     }
 
     public static Project getCurrent() {
@@ -27,6 +28,7 @@ public class Project {
     }
 
     public static synchronized Project createNew(int imageWidth, int imageHeight) {
+    	System.out.println("createNew");
         if (getCurrent() != null) {
             // Prompt to save current project
             int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
@@ -45,18 +47,24 @@ public class Project {
                 break;
             }
         }
-        return new Project(imageWidth, imageHeight);
+        return instance = new Project(imageWidth, imageHeight);
     }
 
     protected void update() {
+    
         if (tool != null) {
             if (Input.getMouseButtonDown(0)) {
+            	//System.out.println("button down");
                 tool.startAction();
             } else if (Input.getMouseButton(0)) {
+            //	System.out.println("button held");
                 tool.updateAction();
             } else if (Input.getMouseButtonUp(0)) {
+            //	System.out.println("button up");
                 tool.finishAction();
             }
+        }else {
+        	System.out.println("tool =null");
         }
     }
 
@@ -77,11 +85,8 @@ public class Project {
     }
 
     public void setPrimaryBrushColor(Color color) {
-
         this.primaryBrushColor = color;
-
     }
-
     public void setSecondaryBrushColor(Color color) {
         this.secondaryBrushColor = color;
     }
@@ -97,13 +102,11 @@ public class Project {
     public Tool getTool() {
         return this.tool;
     }
-
-    public String getBrushShape() {
-        return brushShape;
+    public void setBrushMode(String x) {
+    	this.brushMode = x;
     }
-
-    public void setBrushShape(String x) {
-        brushShape = x;
+    public String getBrushMode() {
+    	return brushMode;
     }
 
     public boolean save(File file) {

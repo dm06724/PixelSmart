@@ -2,9 +2,12 @@ package pixelsmart;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
+
+import javax.swing.JOptionPane;
 
 public class Image implements Iterable<Layer> {
 
@@ -19,6 +22,8 @@ public class Image implements Iterable<Layer> {
         this.height = height;
 
         this.layers = new ArrayList<Layer>();
+        this.addLayer("Base");
+        setActiveLayer(0);
     }
 
     public static Image getCurrent() {
@@ -54,18 +59,22 @@ public class Image implements Iterable<Layer> {
     }
 
     public boolean addLayer(String name) {
-        if (name == null || name.isBlank() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
+        if (name == null || name.isEmpty() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
             return false;
         }
         boolean success = layers.add(new Layer(this, name));
+        LayerList.instance.updateList();
+        LayerList.instance.setSelectedIndex(activeLayer);
         return success;
     }
 
     public boolean addLayer(String name, BufferedImage data) {
-        if (name == null || name.isBlank() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
+        if (name == null || name.isEmpty() || containsLayer(x -> x.getName().equalsIgnoreCase(name))) {
             return false;
         }
         boolean success = layers.add(new Layer(this, name, data));
+        LayerList.instance.updateList();
+        LayerList.instance.setSelectedIndex(activeLayer);
         return success;
     }
 
@@ -117,9 +126,7 @@ public class Image implements Iterable<Layer> {
         Graphics2D g = combined.createGraphics();
 
         for (Layer l : layers) {
-            if (l.isVisible()) {
-                g.drawImage(l.getData(), l.getX(), l.getY(), null);
-            }
+            g.drawImage(l.getData(), l.getX(), l.getY(), null);
         }
 
         g.dispose();

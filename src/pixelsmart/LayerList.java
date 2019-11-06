@@ -1,6 +1,5 @@
 package pixelsmart;
 
-import java.awt.Cursor;
 import java.util.Vector;
 
 import javax.swing.JList;
@@ -14,7 +13,6 @@ public class LayerList extends JList<Layer> {
 
     public LayerList() {
         TitledBorder border = new TitledBorder("Layers");
-        this.setVisibleRowCount(10);
         border.setTitlePosition(TitledBorder.TOP);
         border.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(border);

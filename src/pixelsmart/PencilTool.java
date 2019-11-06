@@ -13,6 +13,7 @@ public class PencilTool implements Tool {
 
 	@Override
 	public void startAction() {
+	
 		finalStrokeShape = new Path2D.Double();
 		finalStrokeShape.moveTo(Input.getMouseX(), Input.getMouseY());
 	}

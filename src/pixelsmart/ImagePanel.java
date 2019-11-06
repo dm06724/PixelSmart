@@ -10,9 +10,6 @@ public class ImagePanel extends JPanel {
 
 	public ImagePanel() {
 		super(new BorderLayout(0, 0));
-
-		this.addMouseListener(Input.getInstance());
-		this.addMouseMotionListener(Input.getInstance());
 	}
 
 	@Override

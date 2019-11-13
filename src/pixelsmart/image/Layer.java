@@ -1,9 +1,11 @@
-package pixelsmart;
+package pixelsmart.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+
+import pixelsmart.Input;
 
 public class Layer {
     private Image image;

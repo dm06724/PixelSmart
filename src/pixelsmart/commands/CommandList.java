@@ -1,4 +1,4 @@
-package pixelsmart;
+package pixelsmart.commands;
 
 import java.util.LinkedList;
 

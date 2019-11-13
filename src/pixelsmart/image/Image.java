@@ -1,13 +1,10 @@
-package pixelsmart;
+package pixelsmart.image;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
-
-import javax.swing.JOptionPane;
 
 public class Image implements Iterable<Layer> {
 
@@ -17,17 +14,13 @@ public class Image implements Iterable<Layer> {
     private int width;
     private int height;
 
-    protected Image(int width, int height) {
+    public Image(int width, int height) {
         this.width = width;
         this.height = height;
 
         this.layers = new ArrayList<Layer>();
         this.addLayer("Base");
         setActiveLayer(0);
-    }
-
-    public static Image getCurrent() {
-        return Project.getCurrent() != null ? Project.getCurrent().getImage() : null;
     }
 
     public Layer getActiveLayer() {
@@ -63,8 +56,6 @@ public class Image implements Iterable<Layer> {
             return false;
         }
         boolean success = layers.add(new Layer(this, name));
-        LayerList.instance.updateList();
-        LayerList.instance.setSelectedIndex(activeLayer);
         return success;
     }
 
@@ -73,8 +64,6 @@ public class Image implements Iterable<Layer> {
             return false;
         }
         boolean success = layers.add(new Layer(this, name, data));
-        LayerList.instance.updateList();
-        LayerList.instance.setSelectedIndex(activeLayer);
         return success;
     }
 

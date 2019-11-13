@@ -13,13 +13,10 @@ import pixelsmart.image.Layer;
 
 public class PencilTool extends DrawingTool {
 
-	private int lastMouseX = -1, lastMouseY = -1;
-
 	private Path2D.Double finalStrokeShape;
 
 	@Override
 	public void startAction(Image image) {
-
 		finalStrokeShape = new Path2D.Double();
 		finalStrokeShape.moveTo(Input.getMouseX(), Input.getMouseY());
 	}
@@ -29,15 +26,7 @@ public class PencilTool extends DrawingTool {
 		int mx = Input.getMouseX();
 		int my = Input.getMouseY();
 
-		finalStrokeShape.lineTo(mx, my); // TODO add a method of visualizing so the user can see what they are drawing
-
-		if (lastMouseX < 0 || lastMouseY < 0) {
-			lastMouseX = mx;
-			lastMouseY = my;
-		}
-
-		lastMouseX = mx;
-		lastMouseY = my;
+		finalStrokeShape.lineTo(mx, my);
 	}
 
 	@Override

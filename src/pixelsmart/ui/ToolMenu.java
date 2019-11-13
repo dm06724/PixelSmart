@@ -44,7 +44,7 @@ public class ToolMenu extends JMenu {
             Project.getCurrent().setTool(new EraserTool());
         });
 
-        JMenuItem paintBucketTool = new JMenuItem("Eraser");
+        JMenuItem paintBucketTool = new JMenuItem("Paint Bucket");
         // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
         // KeyEvent.CTRL_DOWN_MASK));
         paintBucketTool.addActionListener(e -> {

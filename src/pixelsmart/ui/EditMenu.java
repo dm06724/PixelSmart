@@ -1,10 +1,12 @@
-package pixelsmart;
+package pixelsmart.ui;
 
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+
+import pixelsmart.commands.CommandList;
 
 public class EditMenu extends JMenu {
     private static final long serialVersionUID = 3180545437387906156L;

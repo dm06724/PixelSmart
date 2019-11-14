@@ -10,20 +10,22 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import pixelsmart.image.Image;
+import pixelsmart.tools.PencilTool;
+import pixelsmart.tools.Tool;
+
 public class Project {
     private static Project instance;
-    private Image image;
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
+    private Image image;
     private int brushSize = 20;
     private Tool tool;
-    private String brushShape;
+    // private GeneralPath brushPath;
+    private String brushMode;
 
     private Project(int imageWidth, int imageHeight) {
-        instance = this;
         this.image = new Image(imageWidth, imageHeight);
-        this.image.addLayer("Base");
-        this.image.setActiveLayer(0);
         this.tool = new PencilTool();
     }
 
@@ -32,6 +34,7 @@ public class Project {
     }
 
     public static synchronized Project createNew(int imageWidth, int imageHeight) {
+        System.out.println("createNew");
         if (getCurrent() != null) {
             // Prompt to save current project
             int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
@@ -50,18 +53,24 @@ public class Project {
                 break;
             }
         }
-        return new Project(imageWidth, imageHeight);
+        return instance = new Project(imageWidth, imageHeight);
     }
 
     protected void update() {
+
         if (tool != null) {
             if (Input.getMouseButtonDown(0)) {
-                tool.startAction();
+                // System.out.println("button down");
+                tool.startAction(image);
             } else if (Input.getMouseButton(0)) {
-                tool.updateAction();
+                // System.out.println("button held");
+                tool.updateAction(image);
             } else if (Input.getMouseButtonUp(0)) {
-                tool.finishAction();
+                // System.out.println("button up");
+                tool.finishAction(image);
             }
+        } else {
+            System.out.println("tool =null");
         }
     }
 
@@ -82,9 +91,7 @@ public class Project {
     }
 
     public void setPrimaryBrushColor(Color color) {
-
         this.primaryBrushColor = color;
-
     }
 
     public void setSecondaryBrushColor(Color color) {
@@ -103,12 +110,12 @@ public class Project {
         return this.tool;
     }
 
-    public String getBrushShape() {
-        return brushShape;
+    public void setBrushMode(String x) {
+        this.brushMode = x;
     }
 
-    public void setBrushShape(String x) {
-        brushShape = x;
+    public String getBrushMode() {
+        return brushMode;
     }
     
     private void addToArrayList(int size, int value, ArrayList<Byte> list)

@@ -1,10 +1,9 @@
-package pixelsmart;
+package pixelsmart.commands;
 
 import java.awt.Color;
 
-enum BrushColorType {
-    PRIMARY, SECONDARY
-}
+import pixelsmart.BrushColorType;
+import pixelsmart.Project;
 
 public class SetBrushColorCommand implements Command {
 

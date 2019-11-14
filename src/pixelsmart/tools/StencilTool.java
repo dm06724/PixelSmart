@@ -1,41 +1,39 @@
-package pixelsmart;
+package pixelsmart.tools;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-public class PencilTool implements Tool {
+import pixelsmart.Input;
+import pixelsmart.Project;
+import pixelsmart.commands.CommandList;
+import pixelsmart.commands.UpdateLayerDataCommand;
+import pixelsmart.image.Image;
+import pixelsmart.image.Layer;
+import pixelsmart.shapes.Shape;
 
-	private int lastMouseX = -1, lastMouseY = -1;
+public class StencilTool extends DrawingTool {
 
 	private Path2D.Double finalStrokeShape;
+	private Shape shapeBehavior;
 
 	@Override
-	public void startAction() {
+	public void startAction(Image image) {
 		finalStrokeShape = new Path2D.Double();
-		finalStrokeShape.moveTo(Input.getMouseX(), Input.getMouseY());
 	}
 
 	@Override
-	public void updateAction() {
+	public void updateAction(Image image) {
 		int mx = Input.getMouseX();
 		int my = Input.getMouseY();
 
-		finalStrokeShape.lineTo(mx, my); // TODO add a method of visualizing so the user can see what they are drawing
-
-		if (lastMouseX < 0 || lastMouseY < 0) {
-			lastMouseX = mx;
-			lastMouseY = my;
-		}
-
-		lastMouseX = mx;
-		lastMouseY = my;
+		finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
 	}
 
 	@Override
-	public void finishAction() {
-		Layer layer = Image.getCurrent().getActiveLayer();
+	public void finishAction(Image image) {
+		Layer layer = image.getActiveLayer();
 		BufferedImage newData = layer.copyData();
 		Graphics2D g = newData.createGraphics();
 
@@ -44,6 +42,7 @@ public class PencilTool implements Tool {
 		g.setStroke(stroke);
 
 		g.draw(finalStrokeShape);
+		g.fill(finalStrokeShape);
 
 		UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
 		CommandList.getInstance().addCommand(c);

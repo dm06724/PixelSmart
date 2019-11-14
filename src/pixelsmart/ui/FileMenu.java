@@ -1,4 +1,4 @@
-package pixelsmart;
+package pixelsmart.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -8,6 +8,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+
+import pixelsmart.MainWindow;
+import pixelsmart.Project;
 
 public class FileMenu extends JMenu {
     private static final long serialVersionUID = -9140684398793551793L;
@@ -21,6 +24,7 @@ public class FileMenu extends JMenu {
         newImage.addActionListener(e -> {
             // TODO add width height menu
             Project.createNew(500, 500);
+
         });
 
         // Open Project
@@ -40,7 +44,7 @@ public class FileMenu extends JMenu {
         JMenuItem save = new JMenuItem("Save");
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         save.addActionListener(e -> {
-            if (Image.getCurrent() == null) {
+            if (Project.getCurrent() == null) {
                 return;
             }
             Project.getCurrent().save(new File("test.ps"));
@@ -51,10 +55,10 @@ public class FileMenu extends JMenu {
         export.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         export.addActionListener(e -> {
-            if (Image.getCurrent() == null) {
+            if (Project.getCurrent() == null) {
                 return;
             }
-            Image.getCurrent().export();
+            Project.getCurrent().getImage().export();
         });
 
         // Close

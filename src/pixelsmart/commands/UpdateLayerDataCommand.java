@@ -1,6 +1,8 @@
-package pixelsmart;
+package pixelsmart.commands;
 
 import java.awt.image.BufferedImage;
+
+import pixelsmart.image.Layer;
 
 public class UpdateLayerDataCommand implements Command {
 

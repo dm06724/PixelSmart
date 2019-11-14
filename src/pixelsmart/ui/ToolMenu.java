@@ -10,7 +10,7 @@ import pixelsmart.tools.PaintBucketTool;
 import pixelsmart.tools.PencilTool;
 import pixelsmart.tools.SelectTool;
 
-public class ToolMenu extends JMenu {
+public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */{
     private static final long serialVersionUID = 3180545437387906156L;
 
     public ToolMenu() {

@@ -2,6 +2,11 @@ package pixelsmart;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -105,11 +110,80 @@ public class Project {
     public void setBrushShape(String x) {
         brushShape = x;
     }
-
+    
+    private void addToArrayList(int size, int value, ArrayList<Byte> list)
+    {
+    	if(size<=4)
+    	{
+	    	for(int i=0; i<size; i++)
+	    	{
+		    	list.add((byte)((value >> 8*i) & 0xFF));
+	    	}
+    	}
+    	
+    }
+    
+    private ArrayList<Byte> getFileHeader()
+    {
+    	//must store overall Width, Height, Amount of Layers, Current Brush, Current Color,
+    	//Active Layer
+    	ArrayList<Byte> head = new ArrayList<Byte>();
+    	head.add((byte)'p');
+    	head.add((byte)'s');
+    	
+    	addToArrayList(4, image.getWidth(), head);
+    	addToArrayList(4, image.getHeight(), head);
+    	addToArrayList(2, image.getLayers().size(), head);
+    	
+    	return head;
+    }
+    
+    private void writeFileHeader(FileOutputStream f)
+    {
+    	try {
+			ArrayList<Byte> values = getFileHeader();
+			byte[] convertedValues = new byte[values.size()];
+			for(int i=0; i<values.size(); i++)
+			{
+				convertedValues[i] = values.get(i);
+			}
+			
+			f.write(convertedValues);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    }
+    
     public boolean save(File file) {
         // TODO serialize all project data somehow
         // layers, brush size, brush colors, etc.
-
+    	FileOutputStream fileWriter = null;
+    	
+    	try {
+			fileWriter = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	if(fileWriter!=null)
+    	{
+    		writeFileHeader(fileWriter);
+    		
+    		try {
+				fileWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    	
         // JFileChooser fileChooser = new JFileChooser();
 
         // int result = fileChooser.showSaveDialog(null);
@@ -120,7 +194,7 @@ public class Project {
         // } else {
         // return false;
         // }
-        return false;
+        //return false;
     }
 
     public static synchronized Project load(File file) {

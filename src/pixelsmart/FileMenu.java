@@ -43,7 +43,7 @@ public class FileMenu extends JMenu {
             if (Image.getCurrent() == null) {
                 return;
             }
-            Project.getCurrent().save(null);
+            Project.getCurrent().save(new File("test.ps"));
         });
 
         // Export

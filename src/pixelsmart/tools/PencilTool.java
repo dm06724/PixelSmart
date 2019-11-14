@@ -18,13 +18,13 @@ public class PencilTool extends DrawingTool {
 	@Override
 	public void startAction(Image image) {
 		finalStrokeShape = new Path2D.Double();
-		finalStrokeShape.moveTo(Input.getMouseX(), Input.getMouseY());
+		finalStrokeShape.moveTo(image.getActiveLayer().getMouseX(), image.getActiveLayer().getMouseY());
 	}
 
 	@Override
 	public void updateAction(Image image) {
-		int mx = Input.getMouseX();
-		int my = Input.getMouseY();
+		int mx = image.getActiveLayer().getMouseX();
+		int my = image.getActiveLayer().getMouseY();
 
 		finalStrokeShape.lineTo(mx, my);
 	}

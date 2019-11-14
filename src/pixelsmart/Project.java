@@ -18,14 +18,15 @@ public class Project {
     private static Project instance;
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
-    private Image image;
     private int brushSize = 20;
     private Tool tool;
     // private GeneralPath brushPath;
     private String brushMode;
 
+    private double zoomLevel = 1;
+    
     private Project(int imageWidth, int imageHeight) {
-        this.image = new Image(imageWidth, imageHeight);
+        MainWindow.getInstance().getPanel().setImage(new Image(imageWidth, imageHeight));
         this.tool = new PencilTool();
     }
 
@@ -57,17 +58,16 @@ public class Project {
     }
 
     protected void update() {
-
         if (tool != null) {
             if (Input.getMouseButtonDown(0)) {
                 // System.out.println("button down");
-                tool.startAction(image);
+                tool.startAction(getImage());
             } else if (Input.getMouseButton(0)) {
                 // System.out.println("button held");
-                tool.updateAction(image);
+                tool.updateAction(getImage());
             } else if (Input.getMouseButtonUp(0)) {
                 // System.out.println("button up");
-                tool.finishAction(image);
+                tool.finishAction(getImage());
             }
         } else {
             System.out.println("tool =null");
@@ -75,7 +75,7 @@ public class Project {
     }
 
     public Image getImage() {
-        return this.image;
+        return MainWindow.getInstance().getPanel().getImage();
     }
 
     public Color getPrimaryBrushColor() {
@@ -130,6 +130,17 @@ public class Project {
     	
     }
     
+    public void setZoomLevel(double level)
+    {
+    	if(level>0)
+    		zoomLevel = level;
+    }
+    
+    public double getZoomLevel()
+    {
+    	return zoomLevel;
+    }
+    
     private ArrayList<Byte> getFileHeader()
     {
     	//must store overall Width, Height, Amount of Layers, Current Brush, Current Color,
@@ -138,9 +149,9 @@ public class Project {
     	head.add((byte)'p');
     	head.add((byte)'s');
     	
-    	addToArrayList(4, image.getWidth(), head);
-    	addToArrayList(4, image.getHeight(), head);
-    	addToArrayList(2, image.getLayers().size(), head);
+    	//addToArrayList(4, image.getWidth(), head);
+    	//addToArrayList(4, image.getHeight(), head);
+    	//addToArrayList(2, image.getLayers().size(), head);
     	
     	return head;
     }

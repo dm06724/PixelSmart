@@ -24,7 +24,10 @@ public class FileMenu extends JMenu {
         newImage.addActionListener(e -> {
             // TODO add width height menu
             Project.createNew(500, 500);
-
+            
+            //A test to show that you can resize the window, but I want to refrain
+            //from this and use the zoom tool to fit the image in the window.
+            //MainWindow.getInstance().setBounds(MainWindow.getInstance().getX(), MainWindow.getInstance().getY(), 500+96, 500+96);
         });
 
         // Open Project

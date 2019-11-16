@@ -2,21 +2,32 @@ package pixelsmart;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import pixelsmart.image.Image;
+import pixelsmart.tools.PencilTool;
+import pixelsmart.tools.Tool;
+
 public class Project {
     private static Project instance;
-    private Image image;
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
     private int brushSize = 20;
     private Tool tool;
-    private String brushShape;
+    // private GeneralPath brushPath;
+    private String brushMode;
 
+    private double zoomLevel = 1;
+    
     private Project(int imageWidth, int imageHeight) {
-        this.image = new Image(imageWidth, imageHeight);
-        this.tool = new MoveTool();
+        MainWindow.getInstance().getPanel().setImage(new Image(imageWidth, imageHeight));
+        this.tool = new PencilTool();
     }
 
     public static Project getCurrent() {
@@ -24,6 +35,7 @@ public class Project {
     }
 
     public static synchronized Project createNew(int imageWidth, int imageHeight) {
+        System.out.println("createNew");
         if (getCurrent() != null) {
             // Prompt to save current project
             int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
@@ -48,17 +60,22 @@ public class Project {
     protected void update() {
         if (tool != null) {
             if (Input.getMouseButtonDown(0)) {
-                tool.startAction();
+                // System.out.println("button down");
+                tool.startAction(getImage());
             } else if (Input.getMouseButton(0)) {
-                tool.updateAction();
+                // System.out.println("button held");
+                tool.updateAction(getImage());
             } else if (Input.getMouseButtonUp(0)) {
-                tool.finishAction();
+                // System.out.println("button up");
+                tool.finishAction(getImage());
             }
+        } else {
+            System.out.println("tool =null");
         }
     }
 
     public Image getImage() {
-        return this.image;
+        return MainWindow.getInstance().getPanel().getImage();
     }
 
     public Color getPrimaryBrushColor() {
@@ -74,9 +91,7 @@ public class Project {
     }
 
     public void setPrimaryBrushColor(Color color) {
-
         this.primaryBrushColor = color;
-
     }
 
     public void setSecondaryBrushColor(Color color) {
@@ -95,18 +110,98 @@ public class Project {
         return this.tool;
     }
 
-    public String getBrushShape() {
-        return brushShape;
+    public void setBrushMode(String x) {
+        this.brushMode = x;
     }
 
-    public void setBrushShape(String x) {
-        brushShape = x;
+    public String getBrushMode() {
+        return brushMode;
     }
-
+    
+    private void addToArrayList(int size, int value, ArrayList<Byte> list)
+    {
+    	if(size<=4)
+    	{
+	    	for(int i=0; i<size; i++)
+	    	{
+		    	list.add((byte)((value >> 8*i) & 0xFF));
+	    	}
+    	}
+    	
+    }
+    
+    public void setZoomLevel(double level)
+    {
+    	if(level>0)
+    		zoomLevel = level;
+    }
+    
+    public double getZoomLevel()
+    {
+    	return zoomLevel;
+    }
+    
+    private ArrayList<Byte> getFileHeader()
+    {
+    	//must store overall Width, Height, Amount of Layers, Current Brush, Current Color,
+    	//Active Layer
+    	ArrayList<Byte> head = new ArrayList<Byte>();
+    	head.add((byte)'p');
+    	head.add((byte)'s');
+    	
+    	//addToArrayList(4, image.getWidth(), head);
+    	//addToArrayList(4, image.getHeight(), head);
+    	//addToArrayList(2, image.getLayers().size(), head);
+    	
+    	return head;
+    }
+    
+    private void writeFileHeader(FileOutputStream f)
+    {
+    	try {
+			ArrayList<Byte> values = getFileHeader();
+			byte[] convertedValues = new byte[values.size()];
+			for(int i=0; i<values.size(); i++)
+			{
+				convertedValues[i] = values.get(i);
+			}
+			
+			f.write(convertedValues);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    }
+    
     public boolean save(File file) {
         // TODO serialize all project data somehow
         // layers, brush size, brush colors, etc.
-
+    	FileOutputStream fileWriter = null;
+    	
+    	try {
+			fileWriter = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	if(fileWriter!=null)
+    	{
+    		writeFileHeader(fileWriter);
+    		
+    		try {
+				fileWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    	
         // JFileChooser fileChooser = new JFileChooser();
 
         // int result = fileChooser.showSaveDialog(null);
@@ -117,7 +212,7 @@ public class Project {
         // } else {
         // return false;
         // }
-        return false;
+        //return false;
     }
 
     public static synchronized Project load(File file) {

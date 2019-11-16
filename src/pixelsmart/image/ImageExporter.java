@@ -1,4 +1,4 @@
-package pixelsmart;
+package pixelsmart.image;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+
+import pixelsmart.MainWindow;
 
 public class ImageExporter {
 
@@ -31,7 +33,7 @@ public class ImageExporter {
         }
     }
 
-    public static BufferedImage loadWithDialog(){
+    public static BufferedImage loadWithDialog() {
         JFileChooser fileChooser = new JFileChooser();
 
         int result = fileChooser.showOpenDialog(MainWindow.getInstance());

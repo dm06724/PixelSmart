@@ -1,9 +1,12 @@
-package pixelsmart;
+package pixelsmart.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+
+import pixelsmart.Input;
+import pixelsmart.MainWindow;
 
 public class Layer {
     private Image image;
@@ -114,11 +117,11 @@ public class Layer {
     }
 
     public int getMouseX() {
-        return Input.getMouseX() - this.getX();
+        return MainWindow.getInstance().getPanel().getMouseX() - this.getX();
     }
 
     public int getMouseY() {
-        return Input.getMouseY() - this.getY();
+        return MainWindow.getInstance().getPanel().getMouseY() - this.getY();
     }
 
     public Color getPixelColor(int x, int y) {

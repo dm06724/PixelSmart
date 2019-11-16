@@ -58,14 +58,46 @@ public class LayerMenu extends JMenu {
             Project.getCurrent().getImage().getActiveLayer().delete();
         });
 
+        // Previous Layer
+        JMenuItem prevLayerButton = new JMenuItem("Load");
+        prevLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK));
+
+        prevLayerButton.addActionListener(e -> {
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            int layerCount = image.layerCount();
+            int currentLayerIndex = image.getActiveLayer().getIndex();
+            int nextLayer = (currentLayerIndex + 1) % layerCount;
+
+            image.setActiveLayer(nextLayer);
+        });
+
+        // Next Layer
+        JMenuItem nextLayerButton = new JMenuItem("Load");
+        nextLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK));
+
+        nextLayerButton.addActionListener(e -> {
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            int layerCount = image.layerCount();
+            int currentLayerIndex = image.getActiveLayer().getIndex();
+            int prevLayer = (layerCount + currentLayerIndex - 1) % layerCount;
+
+            image.setActiveLayer(prevLayer);
+        });
+
         // Set active layer as base layer
         JMenuItem setActiveLayerBase = new JMenuItem("Set Active Layer as Base Layer");
 
         setActiveLayerBase.addActionListener(e -> {
-            if (Project.getCurrent() == null){
+            if (Project.getCurrent() == null) {
                 return;
             }
-            
+
             Image img = Project.getCurrent().getImage();
             Layer activeLayer = img.getActiveLayer();
 

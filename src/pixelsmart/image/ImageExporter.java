@@ -49,6 +49,7 @@ public class ImageExporter {
         try {
             return ImageIO.read(file);
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

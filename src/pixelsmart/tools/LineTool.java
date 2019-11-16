@@ -1,28 +1,27 @@
-package pixelsmart;
+package pixelsmart.tools;
 
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
-public class LineTool implements Tool {
+import pixelsmart.commands.CommandList;
+import pixelsmart.commands.UpdateLayerDataCommand;
+import pixelsmart.image.Image;
+import pixelsmart.image.Layer;
+
+public class LineTool extends DrawingTool {
 
     private int startMX, startMY;
 
     @Override
-    public void startAction() {
-        Layer layer = Image.getCurrent().getActiveLayer();
+    public void startAction(Image image) {
+        Layer layer = image.getActiveLayer();
         startMX = layer.getMouseX();
         startMY = layer.getMouseY();
     }
 
     @Override
-    public void updateAction() {
-
-    }
-
-    @Override
-    public void finishAction() {
-        Image img = Image.getCurrent();
-        Layer layer = img.getActiveLayer();
+    public void finishAction(Image image) {
+        Layer layer = image.getActiveLayer();
 
         int mx = layer.getMouseX();
         int my = layer.getMouseY();

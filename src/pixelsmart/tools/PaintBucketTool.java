@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import pixelsmart.Input;
 import pixelsmart.Project;
 import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
@@ -20,8 +19,8 @@ public class PaintBucketTool extends ToolAdapter {
 
 	@Override
 	public void finishAction(Image image) {
-		int mx = Input.getMouseX();
-		int my = Input.getMouseY();
+		int mx = image.getActiveLayer().getMouseX();
+		int my = image.getActiveLayer().getMouseY();
 		layer = image.getActiveLayer();
 		newData = layer.copyData();
 		tc = newData.getRGB(mx, my);

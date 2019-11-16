@@ -19,32 +19,32 @@ public class StencilTool extends DrawingTool {
 	private Shape shapeBehavior;
 
 	@Override
-	public void startAction(Image image) {
+	public void startAction(final Image image) {
 		finalStrokeShape = new Path2D.Double();
 	}
 
 	@Override
-	public void updateAction(Image image) {
-		int mx = Input.getMouseX();
-		int my = Input.getMouseY();
+	public void updateAction(final Image image) {
+		final int mx = image.getActiveLayer().getMouseX();
+		final int my = image.getActiveLayer().getMouseY();
 
 		finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
 	}
 
 	@Override
-	public void finishAction(Image image) {
-		Layer layer = image.getActiveLayer();
-		BufferedImage newData = layer.copyData();
-		Graphics2D g = newData.createGraphics();
+	public void finishAction(final Image image) {
+		final Layer layer = image.getActiveLayer();
+		final BufferedImage newData = layer.copyData();
+		final Graphics2D g = newData.createGraphics();
 
 		g.setColor(Project.getCurrent().getPrimaryBrushColor());
-		BasicStroke stroke = new BasicStroke(Project.getCurrent().getBrushSize());
+		final BasicStroke stroke = new BasicStroke(Project.getCurrent().getBrushSize());
 		g.setStroke(stroke);
 
 		g.draw(finalStrokeShape);
 		g.fill(finalStrokeShape);
 
-		UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
+		final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
 		CommandList.getInstance().addCommand(c);
 
 		g.dispose();

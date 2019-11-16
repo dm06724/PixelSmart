@@ -16,32 +16,32 @@ public class PencilTool extends DrawingTool {
 	private Path2D.Double finalStrokeShape;
 
 	@Override
-	public void startAction(Image image) {
+	public void startAction(final Image image) {
 		finalStrokeShape = new Path2D.Double();
 		finalStrokeShape.moveTo(image.getActiveLayer().getMouseX(), image.getActiveLayer().getMouseY());
 	}
 
 	@Override
-	public void updateAction(Image image) {
-		int mx = image.getActiveLayer().getMouseX();
-		int my = image.getActiveLayer().getMouseY();
+	public void updateAction(final Image image) {
+		final int mx = image.getActiveLayer().getMouseX();
+		final int my = image.getActiveLayer().getMouseY();
 
 		finalStrokeShape.lineTo(mx, my);
 	}
 
 	@Override
-	public void finishAction(Image image) {
-		Layer layer = image.getActiveLayer();
-		BufferedImage newData = layer.copyData();
-		Graphics2D g = newData.createGraphics();
+	public void finishAction(final Image image) {
+		final Layer layer = image.getActiveLayer();
+		final BufferedImage newData = layer.copyData();
+		final Graphics2D g = newData.createGraphics();
 
 		g.setColor(getColor());
-		BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+		final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 		g.setStroke(stroke);
 
 		g.draw(finalStrokeShape);
 
-		UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
+		final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
 		CommandList.getInstance().addCommand(c);
 
 		g.dispose();

@@ -24,7 +24,7 @@ public class Layer {
         this.name = name;
         this.image = image;
 
-        if (data != null) {
+        if (data == null) {
             this.clear();
         } else {
             this.setData(data);
@@ -134,7 +134,7 @@ public class Layer {
         return new Color(redComponent, greenComponent, blueComponent, alphaComponent);
     }
 
-    public void setPixelColor(int x, int y) {
-        // TODO
+    public void setPixelColor(int x, int y, Color color) {
+        this.data.setRGB(x, y, color.getRGB());
     }
 }

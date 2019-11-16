@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import pixelsmart.ui.LayerList;
+import pixelsmart.ui.LayerMenu;
+
 public class Image implements Iterable<Layer> {
 
     private final ArrayList<Layer> layers;
@@ -64,6 +67,7 @@ public class Image implements Iterable<Layer> {
             return false;
         }
         boolean success = layers.add(new Layer(this, name, data));
+        LayerList.instance.updateList();
         return success;
     }
 

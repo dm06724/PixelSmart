@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import pixelsmart.MainWindow;
 import pixelsmart.image.Image;
 import pixelsmart.image.ImageExporter;
 import pixelsmart.image.Layer;

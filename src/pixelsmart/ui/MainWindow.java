@@ -1,4 +1,4 @@
-package pixelsmart;
+package pixelsmart.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,13 +13,6 @@ import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
 import pixelsmart.tools.ToolManager;
-import pixelsmart.ui.EditMenu;
-import pixelsmart.ui.FileMenu;
-import pixelsmart.ui.ImagePanel;
-import pixelsmart.ui.LayerList;
-import pixelsmart.ui.LayerMenu;
-import pixelsmart.ui.SliderWithText;
-import pixelsmart.ui.ToolMenu;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -2835920738241308199L;
@@ -86,7 +79,7 @@ public class MainWindow extends JFrame {
 		return currentWindow;
 	}
 
-	protected void run() {
+	public void run() {
 		Input.getInstance().update();
 		while (running()) {
 			// Update

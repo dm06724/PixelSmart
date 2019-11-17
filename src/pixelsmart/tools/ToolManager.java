@@ -2,9 +2,9 @@ package pixelsmart.tools;
 
 import java.awt.Color;
 
-import pixelsmart.Input;
-import pixelsmart.MainWindow;
 import pixelsmart.ui.ImagePanel;
+import pixelsmart.ui.Input;
+import pixelsmart.ui.MainWindow;
 
 public class ToolManager {
 

@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
-import pixelsmart.MainWindow;
+import pixelsmart.ui.MainWindow;
 
 public class ImageExporter {
 

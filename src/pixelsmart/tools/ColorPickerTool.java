@@ -2,7 +2,6 @@ package pixelsmart.tools;
 
 import java.awt.Color;
 
-import pixelsmart.BrushColorType;
 import pixelsmart.commands.CommandList;
 import pixelsmart.commands.SetBrushColorCommand;
 import pixelsmart.image.Layer;

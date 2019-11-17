@@ -13,9 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import pixelsmart.MainWindow;
 import pixelsmart.image.Image;
-import pixelsmart.tools.ToolManager;
 
 public class FileMenu extends JMenu {
     private static final long serialVersionUID = -9140684398793551793L;

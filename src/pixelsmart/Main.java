@@ -2,6 +2,8 @@ package pixelsmart;
 
 import javax.swing.UIManager;
 
+import pixelsmart.ui.MainWindow;
+
 public class Main {
     public static void main(String[] args) {
     	
@@ -13,6 +15,5 @@ public class Main {
         MainWindow window = MainWindow.getInstance();
         window.setVisible(true);
         window.run();
-        
     }
 }

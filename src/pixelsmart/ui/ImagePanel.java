@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +13,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import pixelsmart.Input;
-import pixelsmart.MainWindow;
 import pixelsmart.MathUtil;
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
@@ -26,9 +23,9 @@ public class ImagePanel extends JPanel {
 	public static final int RELATIVE_TO_LAYER = 2;
 	private static final double ZOOM_MULTIPLIER = 0.2f;
 	private static final double MIN_ZOOM = 0.2;
-	private static final double MAX_ZOOM = 5.0;
+	private static final double MAX_ZOOM = 50.0;
 	private static final long serialVersionUID = -5952682079799751735L;
-	private static final Color BACKGROUND_COLOR = new Color(51, 51, 51);
+	private static final Color BACKGROUND_COLOR = new Color(80, 80, 80);
 	private static BufferedImage transBackground;
 	private Image image;
 	private Layer activeLayer;
@@ -58,29 +55,17 @@ public class ImagePanel extends JPanel {
 			return;
 		}
 
-		int width = getImageViewWidth();
-		int height = getImageViewHeight();
+		Rectangle rect = getImageRect();
 
-		int x = getImageViewOffsetX();
-		int y = getImageViewOffsetY();
-
-		TexturePaint backPaint = new TexturePaint(transBackground, new Rectangle(x, y, 50, 50));
+		TexturePaint backPaint = new TexturePaint(transBackground, new Rectangle(rect.x, rect.y, 20, 20));
 
 		g.setPaint(backPaint);
 
-		g.fill(new Rectangle2D.Double(x, y, width, height));
+		g.fill(rect);
 
 		g.setPaint(null);
 
-		// // Draw all layers
-		// for (Layer layer : image) {
-		// 	if (!layer.isVisible())
-		// 		continue;
-		// 	Rectangle layerRect = getLayerRect(layer);
-		// 	g.drawImage(layer.getData(), layerRect.x, layerRect.y, layerRect.width, layerRect.height, null);
-		// }
-
-		g.drawImage(image.getAggregatedData(), x, y, width, height, null);
+		g.drawImage(image.getAggregatedData(), rect.x, rect.y, rect.width, rect.height, null);
 
 		// Draw a box around active layer
 		if (activeLayer != null) {

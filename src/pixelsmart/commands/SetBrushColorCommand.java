@@ -2,7 +2,7 @@ package pixelsmart.commands;
 
 import java.awt.Color;
 
-import pixelsmart.BrushColorType;
+import pixelsmart.tools.BrushColorType;
 import pixelsmart.tools.ToolManager;
 
 public class SetBrushColorCommand implements Command {

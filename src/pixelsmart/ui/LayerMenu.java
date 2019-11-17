@@ -13,7 +13,6 @@ import pixelsmart.MainWindow;
 import pixelsmart.Project;
 import pixelsmart.image.Image;
 import pixelsmart.image.ImageExporter;
-import pixelsmart.image.Layer;
 
 public class LayerMenu extends JMenu {
     private static final long serialVersionUID = -5953911805394394364L;
@@ -21,9 +20,11 @@ public class LayerMenu extends JMenu {
     public LayerMenu() {
         super("Layer");
 
-        // New Layer
+        /**
+         * Add New Layer
+         */
         JMenuItem addNewLayer = new JMenuItem("New Layer");
-        addNewLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        addNewLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK));
 
         addNewLayer.addActionListener(e -> {
             Image img = Project.getCurrent().getImage();
@@ -33,33 +34,52 @@ public class LayerMenu extends JMenu {
 
             String name = JOptionPane.showInputDialog(MainWindow.getInstance(), "Enter a layer name:");
 
-            if (name == null || name.isEmpty()) {
+            if (name == null) {
                 return;
+            }
+
+            if (name.isEmpty()) {
+                name = "Layer " + (img.layerCount() + 1);
             }
 
             img.addLayer(name);
         });
 
-        // Load Layer
+        /**
+         * Load Layer From File
+         */
         JMenuItem loadLayerButton = new JMenuItem("Load");
         loadLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
 
         loadLayerButton.addActionListener(e -> {
             Image img = Project.getCurrent().getImage();
             BufferedImage data = ImageExporter.loadWithDialog();
+
+            if (data == null) {
+                return;
+            }
+
             img.addLayer(img.layerCount() + "", data);
         });
 
-        // Delete Active Layer
+        /**
+         * Delete Layer
+         */
         JMenuItem deleteLayer = new JMenuItem("Remove Layer");
         deleteLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
 
         deleteLayer.addActionListener(e -> {
-            Project.getCurrent().getImage().getActiveLayer().delete();
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            image.getActiveLayer().delete();
         });
 
-        // Previous Layer
-        JMenuItem prevLayerButton = new JMenuItem("Load");
+        /**
+         * Select Previous Layer
+         */
+        JMenuItem prevLayerButton = new JMenuItem("Previous Layer");
         prevLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK));
 
         prevLayerButton.addActionListener(e -> {
@@ -67,15 +87,13 @@ public class LayerMenu extends JMenu {
                 return;
             }
             Image image = Project.getCurrent().getImage();
-            int layerCount = image.layerCount();
-            int currentLayerIndex = image.getActiveLayer().getIndex();
-            int nextLayer = (currentLayerIndex + 1) % layerCount;
-
-            image.setActiveLayer(nextLayer);
+            image.getActiveLayer().getPreviousLayer(true).setAsActive();
         });
 
-        // Next Layer
-        JMenuItem nextLayerButton = new JMenuItem("Load");
+        /**
+         * Select Next Layer
+         */
+        JMenuItem nextLayerButton = new JMenuItem("Next Layer");
         nextLayerButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK));
 
         nextLayerButton.addActionListener(e -> {
@@ -83,30 +101,77 @@ public class LayerMenu extends JMenu {
                 return;
             }
             Image image = Project.getCurrent().getImage();
-            int layerCount = image.layerCount();
-            int currentLayerIndex = image.getActiveLayer().getIndex();
-            int prevLayer = (layerCount + currentLayerIndex - 1) % layerCount;
-
-            image.setActiveLayer(prevLayer);
+            image.getActiveLayer().getNextLayer(true).setAsActive();
         });
 
-        // Set active layer as base layer
+        /**
+         * Move Layer Up
+         */
+        JMenuItem shiftLayerUpButton = new JMenuItem("Shift Layer Up");
+        shiftLayerUpButton.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+
+        shiftLayerUpButton.addActionListener(e -> {
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            image.getActiveLayer().moveUp();
+        });
+
+        /**
+         * Move Layer Down
+         */
+        JMenuItem shiftLayerDownButton = new JMenuItem("Shift Layer Down");
+        shiftLayerDownButton.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+
+        shiftLayerDownButton.addActionListener(e -> {
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            image.getActiveLayer().moveDown();
+        });
+
+        /**
+         * Toggle Layer Visibility
+         */
+        JMenuItem toggleLayerVisibilityButton = new JMenuItem("Toggle Hidden");
+        toggleLayerVisibilityButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK));
+
+        toggleLayerVisibilityButton.addActionListener(e -> {
+            if (Project.getCurrent() == null) {
+                return;
+            }
+            Image image = Project.getCurrent().getImage();
+            image.getActiveLayer().toggleVisible();
+        });
+
+        /**
+         * Set Active Layer as Base Layer
+         */
         JMenuItem setActiveLayerBase = new JMenuItem("Set Active Layer as Base Layer");
 
         setActiveLayerBase.addActionListener(e -> {
             if (Project.getCurrent() == null) {
                 return;
             }
-
-            Image img = Project.getCurrent().getImage();
-            Layer activeLayer = img.getActiveLayer();
-
-            img.setBaseLayer(activeLayer);
+            Image image = Project.getCurrent().getImage();
+            image.getActiveLayer().setAsActive();
         });
 
         this.add(addNewLayer);
         this.add(deleteLayer);
         this.add(loadLayerButton);
+        this.add(new JSeparator());
+        this.add(prevLayerButton);
+        this.add(nextLayerButton);
+        this.add(new JSeparator());
+        this.add(shiftLayerDownButton);
+        this.add(shiftLayerUpButton);
+        this.add(new JSeparator());
+        this.add(toggleLayerVisibilityButton);
         this.add(new JSeparator());
         this.add(setActiveLayerBase);
     }

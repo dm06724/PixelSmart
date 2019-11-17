@@ -1,18 +1,20 @@
 package pixelsmart.image;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
-import pixelsmart.Input;
 import pixelsmart.MainWindow;
+import pixelsmart.Project;
 
 public class Layer {
     private Image image;
     private BufferedImage data;
     private String name;
     private int x, y;
+    private boolean isVisible = true;
 
     protected Layer(Image image, String name) {
         this.name = name;
@@ -76,8 +78,20 @@ public class Layer {
         return this.y;
     }
 
+    public boolean isVisible() {
+        return this.isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.isVisible = visible;
+    }
+
+    public void toggleVisible() {
+        this.isVisible = !this.isVisible;
+    }
+
     public String toString() {
-        return this.name;
+        return this.name + (isBaseLayer() ? " (Base)" : "") + (isVisible ? "" : " (H)");
     }
 
     public void setIndex(int index) {
@@ -94,6 +108,34 @@ public class Layer {
 
     public void moveDown() {
         this.setIndex(this.getIndex() - 1);
+    }
+
+    public Rectangle getRect() {
+        return new Rectangle(this.x, this.y, data.getWidth(), data.getHeight());
+    }
+
+    public Layer getNextLayer() {
+        return this.image.getLayerByIndex(getIndex() + 1);
+    }
+
+    public Layer getPreviousLayer() {
+        return this.image.getLayerByIndex(getIndex() - 1);
+    }
+
+    public Layer getNextLayer(boolean wrap) {
+        int index = getIndex() + 1;
+        if (wrap) {
+            index %= image.layerCount();
+        }
+        return this.image.getLayerByIndex(index);
+    }
+
+    public Layer getPreviousLayer(boolean wrap) {
+        int index = getIndex() - 1;
+        if (wrap) {
+            index = (index + image.layerCount()) % image.layerCount();
+        }
+        return this.image.getLayerByIndex(index);
     }
 
     public boolean isBaseLayer() {
@@ -117,11 +159,11 @@ public class Layer {
     }
 
     public int getMouseX() {
-        return MainWindow.getInstance().getPanel().getMouseX() - this.getX();
+        return (int) (MainWindow.getInstance().getPanel().getMouseX() - this.getX());
     }
 
     public int getMouseY() {
-        return MainWindow.getInstance().getPanel().getMouseY() - this.getY();
+        return (int) (MainWindow.getInstance().getPanel().getMouseY() - this.getY());
     }
 
     public Color getPixelColor(int x, int y) {

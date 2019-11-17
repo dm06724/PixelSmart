@@ -2,10 +2,14 @@ package pixelsmart.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.text.NumberFormat;
 
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
@@ -22,12 +26,46 @@ public class FileMenu extends JMenu {
         JMenuItem newImage = new JMenuItem("New Project");
         newImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         newImage.addActionListener(e -> {
-            // TODO add width height menu
-            Project.createNew(500, 500);
-            
-            //A test to show that you can resize the window, but I want to refrain
-            //from this and use the zoom tool to fit the image in the window.
-            //MainWindow.getInstance().setBounds(MainWindow.getInstance().getX(), MainWindow.getInstance().getY(), 500+96, 500+96);
+            if (Project.getCurrent() != null) {
+                // Prompt to save current project
+                int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
+                        "Do you want to save your current project?", "Save Current Project?",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                switch (result) {
+                default:
+                case JOptionPane.CLOSED_OPTION:
+                case JOptionPane.CANCEL_OPTION:
+                    return;
+                case JOptionPane.NO_OPTION:
+                    break;
+                case JOptionPane.YES_OPTION:
+                    if (!Project.getCurrent().save(null))
+                        return;
+                    break;
+                }
+            }
+            NumberFormat format = NumberFormat.getInstance();
+            format.setParseIntegerOnly(true);
+            JFormattedTextField widthInput = new JFormattedTextField(format);
+            JFormattedTextField heightInput = new JFormattedTextField(format);
+            widthInput.setText("64");
+            heightInput.setText("64");
+
+            final JComponent[] inputs = new JComponent[] { widthInput, heightInput };
+
+            int result = JOptionPane.showConfirmDialog(null, inputs, "Create New Project", JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    int width = Integer.parseInt(widthInput.getText());
+                    int height = Integer.parseInt(heightInput.getText());
+
+                    Project.createNew(width, height);
+                } catch (Exception ex) {
+                    Project.createNew(64, 64);
+                }
+            } else {
+                return;
+            }
         });
 
         // Open Project

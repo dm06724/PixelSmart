@@ -1,7 +1,10 @@
 package pixelsmart.ui;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import pixelsmart.Project;
 import pixelsmart.tools.ColorPickerTool;
@@ -20,67 +23,85 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
     public ToolMenu() {
         super("Tools");
 
+        /**
+         * Pencil Tool
+         */
         JMenuItem pencilTool = new JMenuItem("Pencil");
-        // pencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-        // KeyEvent.CTRL_DOWN_MASK));
+        pencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.SHIFT_DOWN_MASK));
         pencilTool.addActionListener(e -> {
             Project.getCurrent().setTool(new PencilTool());
         });
 
+        /**
+         * Color Picker Tool
+         */
         JMenuItem colorPickerTool = new JMenuItem("Color Picker");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        colorPickerTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.SHIFT_DOWN_MASK));
         colorPickerTool.addActionListener(e -> {
             Project.getCurrent().setTool(new ColorPickerTool());
         });
 
-        JMenuItem selectTool = new JMenuItem("Select");
-        // pencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-        // KeyEvent.CTRL_DOWN_MASK));
-        selectTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new SelectTool());
-        });
-
+        /**
+         * Eraser Tool
+         */
         JMenuItem eraserTool = new JMenuItem("Eraser");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        eraserTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.SHIFT_DOWN_MASK));
         eraserTool.addActionListener(e -> {
             Project.getCurrent().setTool(new EraserTool());
         });
 
+        /**
+         * Paint Bucket Tool
+         */
         JMenuItem paintBucketTool = new JMenuItem("Paint Bucket");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        paintBucketTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.SHIFT_DOWN_MASK));
         paintBucketTool.addActionListener(e -> {
             Project.getCurrent().setTool(new PaintBucketTool());
         });
 
+        /**
+         * Move Tool
+         */
         JMenuItem moveTool = new JMenuItem("Move");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        moveTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.SHIFT_DOWN_MASK));
         moveTool.addActionListener(e -> {
             Project.getCurrent().setTool(new MoveTool());
         });
 
-        JMenuItem zoomTool = new JMenuItem("Zoom");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
-        zoomTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new ZoomTool());
-        });
-
+        /**
+         * Line Tool
+         */
         JMenuItem lineTool = new JMenuItem("Line");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        lineTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.SHIFT_DOWN_MASK));
         lineTool.addActionListener(e -> {
             Project.getCurrent().setTool(new LineTool());
         });
 
+        /**
+         * Select Tool
+         */
+        JMenuItem selectTool = new JMenuItem("Select");
+        selectTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK));
+        selectTool.addActionListener(e -> {
+            Project.getCurrent().setTool(new SelectTool());
+        });
+
+        /**
+         * Stencil Tool
+         */
         JMenuItem stencilTool = new JMenuItem("Stencil");
-        // colorpicker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-        // KeyEvent.CTRL_DOWN_MASK));
+        stencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.SHIFT_DOWN_MASK));
         stencilTool.addActionListener(e -> {
             Project.getCurrent().setTool(new StencilTool());
+        });
+
+        /**
+         * Zoom Tool
+         */
+        JMenuItem zoomTool = new JMenuItem("Zoom");
+        zoomTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.SHIFT_DOWN_MASK));
+        zoomTool.addActionListener(e -> {
+            Project.getCurrent().setTool(new ZoomTool());
         });
 
         this.add(colorPickerTool);
@@ -91,6 +112,6 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         this.add(pencilTool);
         this.add(selectTool);
         this.add(stencilTool);
-        this.add(eraserTool);
+        this.add(zoomTool);
     }
 }

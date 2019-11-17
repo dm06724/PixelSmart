@@ -17,6 +17,7 @@ import pixelsmart.ui.FileMenu;
 import pixelsmart.ui.ImagePanel;
 import pixelsmart.ui.LayerList;
 import pixelsmart.ui.LayerMenu;
+import pixelsmart.ui.SliderWithText;
 import pixelsmart.ui.ToolMenu;
 
 public class MainWindow extends JFrame {
@@ -31,10 +32,11 @@ public class MainWindow extends JFrame {
 	private MainWindow() {
 		this.setTitle("PixelSmart");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(100, 100, 600, 450);
+		this.setSize(1000, 800);
+		this.setLocationRelativeTo(null);
 
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		this.setContentPane(contentPane);
 
@@ -43,7 +45,6 @@ public class MainWindow extends JFrame {
 		JToolBar attributeToolbar = new JToolBar("Tools");
 
 		JButton colorWheelButton = new JButton();
-
 		colorWheelButton.addActionListener(e -> {
 			if (Project.getCurrent() == null) {
 				return;
@@ -55,6 +56,7 @@ public class MainWindow extends JFrame {
 
 		attributeToolbar.add(new JLabel("Color"));
 		attributeToolbar.add(colorWheelButton);
+		attributeToolbar.add(new SliderWithText());
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(new FileMenu());
@@ -62,15 +64,17 @@ public class MainWindow extends JFrame {
 		menuBar.add(new LayerMenu());
 		menuBar.add(new ToolMenu());
 
+		this.setJMenuBar(menuBar);
+
 		LayerList layerList = new LayerList();
 
 		contentPane.add(attributeToolbar, BorderLayout.SOUTH);
 		contentPane.add(layerList, BorderLayout.EAST);
 		contentPane.add(imagePanel, BorderLayout.CENTER);
-		contentPane.add(menuBar, BorderLayout.NORTH);
 
 		imagePanel.addMouseMotionListener(Input.getInstance());
 		imagePanel.addMouseListener(Input.getInstance());
+		imagePanel.addMouseWheelListener(Input.getInstance());
 	}
 
 	public static synchronized MainWindow getInstance() {
@@ -88,7 +92,6 @@ public class MainWindow extends JFrame {
 
 			if (Project.getCurrent() != null) {
 				Project.getCurrent().update();
-				// System.out.println("Update");
 			}
 
 			// Render

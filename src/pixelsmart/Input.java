@@ -1,6 +1,7 @@
 package pixelsmart;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.event.MouseInputAdapter;
 
@@ -79,6 +80,22 @@ public class Input extends MouseInputAdapter {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouse2Press = false;
         }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (Project.getCurrent() == null) {
+            return;
+        }
+
+        if (!e.isAltDown()) {
+            return;
+        }
+
+        final double zoomModifier = 0.2;
+        double zoom = Project.getCurrent().getZoomLevel();
+        double scroll = e.getWheelRotation();
+        Project.getCurrent().setZoomLevel(zoom + zoom * scroll * zoomModifier);
     }
 
     public static int getMouseX() {

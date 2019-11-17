@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-import pixelsmart.Input;
 import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
 import pixelsmart.image.Image;

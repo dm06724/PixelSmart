@@ -1,7 +1,5 @@
 package pixelsmart;
 
-import java.nio.ByteBuffer;
-
 import javax.swing.UIManager;
 
 public class Main {

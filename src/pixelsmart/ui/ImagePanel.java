@@ -19,54 +19,61 @@ import pixelsmart.image.Image;
 
 public class ImagePanel extends JPanel {
 	private static final long serialVersionUID = -5952682079799751735L;
+	private static final Color BACKGROUND_COLOR = new Color(51, 51, 51);
 	private static BufferedImage transBackground;
 	private Image image;
-	private static TexturePaint backPaint;
 
 	public ImagePanel() {
-		super(new BorderLayout(0, 0));
+		super(new BorderLayout(5, 5));
 
 		try {
 			transBackground = ImageIO.read(new File("res/images/TransparentBackground.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		backPaint = new TexturePaint(transBackground, new Rectangle2D.Double(0, 0, 2, 2));
-
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
+	public void paint(Graphics graphics) {
+		Graphics2D g = (Graphics2D) graphics;
 
-		g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
+		g.setBackground(BACKGROUND_COLOR);
+		g.clearRect(0, 0, this.getWidth(), this.getHeight());
 		if (image == null) {
 			return;
 		}
 
-		int width = image.getWidth();
-		int height = image.getHeight();
+		int width = getImageWidth();
+		int height = getImageHeight();
 
 		int x = mouseOffsetX();
 		int y = mouseOffsetY();
 
-		backPaint = new TexturePaint(transBackground, new Rectangle2D.Double(x, y, 50, 50));
+		TexturePaint backPaint = new TexturePaint(transBackground, new Rectangle2D.Double(x, y, 50, 50));
 
-		g2d.setPaint(backPaint);
+		g.setPaint(backPaint);
 
-		g2d.fill(new Rectangle2D.Double(x, y, width, height));
+		g.fill(new Rectangle2D.Double(x, y, width, height));
 
-		g2d.setPaint(null);
-		g2d.drawImage(Project.getCurrent().getImage().getAggregatedData(), x, y, null);
+		g.setPaint(null);
+
+		g.drawImage(image.getAggregatedData(), x, y, width, height, null);
+	}
+
+	private int getImageWidth() {
+		return (int) (image.getWidth() * Project.getCurrent().getZoomLevel());
+	}
+
+	private int getImageHeight() {
+		return (int) (image.getHeight() * Project.getCurrent().getZoomLevel());
 	}
 
 	private int mouseOffsetX() {
-		return (this.getWidth() - image.getWidth()) / 2;
+		return (this.getWidth() - getImageWidth()) / 2;
 	}
 
 	private int mouseOffsetY() {
-		return (this.getHeight() - image.getHeight()) / 2;
+		return (this.getHeight() - getImageHeight()) / 2;
 	}
 
 	public int getMouseX() {

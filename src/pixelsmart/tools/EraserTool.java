@@ -8,29 +8,31 @@ import java.awt.image.BufferedImage;
 
 import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
-import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
+import pixelsmart.ui.ImagePanel;
 
 public class EraserTool extends DrawingTool {
 	private Path2D.Double finalStrokeShape;
 
 	@Override
-	public void startAction(Image image) {
+	public void startAction(ImagePanel panel) {
 		finalStrokeShape = new Path2D.Double();
-		finalStrokeShape.moveTo(image.getActiveLayer().getMouseX(), image.getActiveLayer().getMouseY());
+		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+		finalStrokeShape.moveTo(mx, my);
 	}
 
 	@Override
-	public void updateAction(Image image) {
-		int mx = image.getActiveLayer().getMouseX();
-		int my = image.getActiveLayer().getMouseY();
+	public void updateAction(ImagePanel panel) {
+		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
 		finalStrokeShape.lineTo(mx, my);
 	}
 
 	@Override
-	public void finishAction(Image image) {
-		Layer layer = image.getActiveLayer();
+	public void finishAction(ImagePanel panel) {
+		Layer layer = panel.getActiveLayer();
 		BufferedImage newData = layer.copyData();
 		Graphics2D g = newData.createGraphics();
 

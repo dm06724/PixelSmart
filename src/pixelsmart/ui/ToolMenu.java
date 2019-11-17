@@ -6,7 +6,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import pixelsmart.Project;
 import pixelsmart.tools.ColorPickerTool;
 import pixelsmart.tools.EraserTool;
 import pixelsmart.tools.LineTool;
@@ -15,6 +14,7 @@ import pixelsmart.tools.PaintBucketTool;
 import pixelsmart.tools.PencilTool;
 import pixelsmart.tools.SelectTool;
 import pixelsmart.tools.StencilTool;
+import pixelsmart.tools.ToolManager;
 import pixelsmart.tools.ZoomTool;
 
 public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
@@ -29,7 +29,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem pencilTool = new JMenuItem("Pencil");
         pencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.SHIFT_DOWN_MASK));
         pencilTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new PencilTool());
+            ToolManager.getInstance().setTool(new PencilTool());
         });
 
         /**
@@ -38,7 +38,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem colorPickerTool = new JMenuItem("Color Picker");
         colorPickerTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.SHIFT_DOWN_MASK));
         colorPickerTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new ColorPickerTool());
+            ToolManager.getInstance().setTool(new ColorPickerTool());
         });
 
         /**
@@ -47,7 +47,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem eraserTool = new JMenuItem("Eraser");
         eraserTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.SHIFT_DOWN_MASK));
         eraserTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new EraserTool());
+            ToolManager.getInstance().setTool(new EraserTool());
         });
 
         /**
@@ -56,7 +56,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem paintBucketTool = new JMenuItem("Paint Bucket");
         paintBucketTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.SHIFT_DOWN_MASK));
         paintBucketTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new PaintBucketTool());
+            ToolManager.getInstance().setTool(new PaintBucketTool());
         });
 
         /**
@@ -65,7 +65,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem moveTool = new JMenuItem("Move");
         moveTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.SHIFT_DOWN_MASK));
         moveTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new MoveTool());
+            ToolManager.getInstance().setTool(new MoveTool());
         });
 
         /**
@@ -74,7 +74,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem lineTool = new JMenuItem("Line");
         lineTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.SHIFT_DOWN_MASK));
         lineTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new LineTool());
+            ToolManager.getInstance().setTool(new LineTool());
         });
 
         /**
@@ -83,7 +83,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem selectTool = new JMenuItem("Select");
         selectTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK));
         selectTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new SelectTool());
+            ToolManager.getInstance().setTool(new SelectTool());
         });
 
         /**
@@ -92,7 +92,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem stencilTool = new JMenuItem("Stencil");
         stencilTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.SHIFT_DOWN_MASK));
         stencilTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new StencilTool());
+            ToolManager.getInstance().setTool(new StencilTool());
         });
 
         /**
@@ -101,7 +101,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         JMenuItem zoomTool = new JMenuItem("Zoom");
         zoomTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.SHIFT_DOWN_MASK));
         zoomTool.addActionListener(e -> {
-            Project.getCurrent().setTool(new ZoomTool());
+            ToolManager.getInstance().setTool(new ZoomTool());
         });
 
         this.add(colorPickerTool);

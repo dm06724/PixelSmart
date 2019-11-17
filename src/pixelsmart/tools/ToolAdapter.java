@@ -1,17 +1,20 @@
 package pixelsmart.tools;
 
-import pixelsmart.image.Image;
+import pixelsmart.ui.ImagePanel;
 
 public abstract class ToolAdapter implements Tool {
-    public void startAction(Image image) {
+    @Override
+    public void startAction(ImagePanel panel) {
         
     }
 
-    public void updateAction(Image image){
+    @Override
+    public void updateAction(ImagePanel panel){
 
     }
 
-    public void finishAction(Image image){
+    @Override
+    public void finishAction(ImagePanel panel){
 
     }
 }

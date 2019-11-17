@@ -1,20 +1,16 @@
 package pixelsmart.image;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-
-import pixelsmart.MainWindow;
-import pixelsmart.Project;
 
 public class Layer {
     private Image image;
     private BufferedImage data;
     private String name;
-    private int x, y;
     private boolean isVisible = true;
+    private int x, y, width, height;
 
     protected Layer(Image image, String name) {
         this.name = name;
@@ -70,12 +66,41 @@ public class Layer {
         this.y = y;
     }
 
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public int getX() {
         return this.x;
     }
 
     public int getY() {
         return this.y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getWidth() {
+        return this.width <= 0 ? this.data.getWidth() : this.width;
+    }
+
+    public int getHeight() {
+        return this.height <= 0 ? this.data.getHeight() : this.height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public boolean isVisible() {
@@ -110,10 +135,6 @@ public class Layer {
         this.setIndex(this.getIndex() - 1);
     }
 
-    public Rectangle getRect() {
-        return new Rectangle(this.x, this.y, data.getWidth(), data.getHeight());
-    }
-
     public Layer getNextLayer() {
         return this.image.getLayerByIndex(getIndex() + 1);
     }
@@ -142,28 +163,12 @@ public class Layer {
         return this.image.getBaseLayer() == this;
     }
 
-    public boolean isActiveLayer() {
-        return this.image.getActiveLayer() == this;
-    }
-
     public void setAsBaseLayer() {
         this.image.setBaseLayer(this);
     }
 
-    public void setAsActive() {
-        this.image.setActiveLayer(this);
-    }
-
     public boolean delete() {
         return this.image.removeLayer(this);
-    }
-
-    public int getMouseX() {
-        return (int) (MainWindow.getInstance().getPanel().getMouseX() - this.getX());
-    }
-
-    public int getMouseY() {
-        return (int) (MainWindow.getInstance().getPanel().getMouseY() - this.getY());
     }
 
     public Color getPixelColor(int x, int y) {

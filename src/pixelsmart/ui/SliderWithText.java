@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import pixelsmart.Project;
+import pixelsmart.tools.ToolManager;
 
 public class SliderWithText extends JPanel {
 	private static final long serialVersionUID = 2243280863502885654L;
@@ -24,7 +24,7 @@ public class SliderWithText extends JPanel {
 		slider.addChangeListener(e -> {
 			text.setText(String.valueOf(slider.getValue()));
 			label.setText("Current brush value: " + slider.getValue());
-			Project.getCurrent().setBrushSize(slider.getValue());
+			ToolManager.getInstance().setBrushSize(slider.getValue());
 		});
 		text = new JTextField(2); // length of textbox
 		text.addKeyListener(new KeyAdapter() {

@@ -1,9 +1,8 @@
 package pixelsmart.tools;
 
-import pixelsmart.Project;
-import pixelsmart.image.Image;
+import pixelsmart.ui.ImagePanel;
 
-public class ZoomTool implements Tool {
+public class ZoomTool extends ToolAdapter {
 
 	// Unlike the other tools, this is a system thing
 	// and does not generally get added to the undo and redo list.
@@ -11,28 +10,16 @@ public class ZoomTool implements Tool {
 	// For now, keep it like a singleton that is not a tool.
 
 	public void zoomIn() {
-		Project.getCurrent().setZoomLevel(Project.getCurrent().getZoomLevel() * 2);
+		ImagePanel.get().zoomIn();
 	}
 
 	public void zoomOut() {
-		Project.getCurrent().setZoomLevel(Project.getCurrent().getZoomLevel() / 2);
+		ImagePanel.get().zoomOut();
 	}
 
 	@Override
-	public void startAction(Image image) {
-		// TODO Auto-generated method stub
+	public void finishAction(ImagePanel panel) {
+		// TODO rightclick zoom out
 		zoomIn();
-	}
-
-	@Override
-	public void updateAction(Image image) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void finishAction(Image image) {
-		// TODO Auto-generated method stub
-
 	}
 }

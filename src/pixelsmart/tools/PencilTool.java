@@ -7,30 +7,31 @@ import java.awt.image.BufferedImage;
 
 import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
-import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
+import pixelsmart.ui.ImagePanel;
 
 public class PencilTool extends DrawingTool {
 
 	private Path2D.Double finalStrokeShape;
 
 	@Override
-	public void startAction(final Image image) {
+	public void startAction(final ImagePanel panel) {
 		finalStrokeShape = new Path2D.Double();
-		finalStrokeShape.moveTo(image.getActiveLayer().getMouseX(), image.getActiveLayer().getMouseY());
+		finalStrokeShape.moveTo(panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER),
+				panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER));
 	}
 
 	@Override
-	public void updateAction(final Image image) {
-		final int mx = image.getActiveLayer().getMouseX();
-		final int my = image.getActiveLayer().getMouseY();
+	public void updateAction(final ImagePanel panel) {
+		final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+		final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
 		finalStrokeShape.lineTo(mx, my);
 	}
 
 	@Override
-	public void finishAction(final Image image) {
-		final Layer layer = image.getActiveLayer();
+	public void finishAction(final ImagePanel panel) {
+		final Layer layer = panel.getActiveLayer();
 		final BufferedImage newData = layer.copyData();
 		final Graphics2D g = newData.createGraphics();
 

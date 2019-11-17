@@ -14,7 +14,8 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import pixelsmart.MainWindow;
-import pixelsmart.Project;
+import pixelsmart.image.Image;
+import pixelsmart.tools.ToolManager;
 
 public class FileMenu extends JMenu {
     private static final long serialVersionUID = -9140684398793551793L;
@@ -26,7 +27,7 @@ public class FileMenu extends JMenu {
         JMenuItem newImage = new JMenuItem("New Project");
         newImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         newImage.addActionListener(e -> {
-            if (Project.getCurrent() != null) {
+            if (ImagePanel.get().getImage() != null) {
                 // Prompt to save current project
                 int result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
                         "Do you want to save your current project?", "Save Current Project?",
@@ -39,8 +40,8 @@ public class FileMenu extends JMenu {
                 case JOptionPane.NO_OPTION:
                     break;
                 case JOptionPane.YES_OPTION:
-                    if (!Project.getCurrent().save(null))
-                        return;
+                    // if (!ToolManager.getInstance().save(null))
+                    // return;
                     break;
                 }
             }
@@ -59,17 +60,18 @@ public class FileMenu extends JMenu {
                     int width = Integer.parseInt(widthInput.getText());
                     int height = Integer.parseInt(heightInput.getText());
 
-                    Project.createNew(width, height);
+                    // ToolManager.createNew(width, height);
+                    ImagePanel.get().setImage(new Image(width, height));
                 } catch (Exception ex) {
-                    Project.createNew(64, 64);
+                    ImagePanel.get().setImage(new Image(64, 64));
                 }
             } else {
                 return;
             }
         });
 
-        // Open Project
-        JMenuItem open = new JMenuItem("Open");
+        // Open Image
+        JMenuItem open = new JMenuItem("Open Project");
         open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         open.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -77,7 +79,8 @@ public class FileMenu extends JMenu {
             int result = fileChooser.showSaveDialog(MainWindow.getInstance());
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
-                Project.load(file);
+                // TODO SWITCH TO IMAGE
+                // ToolManager.load(file);
             }
         });
 
@@ -85,10 +88,11 @@ public class FileMenu extends JMenu {
         JMenuItem save = new JMenuItem("Save");
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         save.addActionListener(e -> {
-            if (Project.getCurrent() == null) {
+            if (ImagePanel.get().getImage() == null) {
                 return;
             }
-            Project.getCurrent().save(new File("test.ps"));
+            // TODO
+            // ToolManager.getCurrent().save(new File("test.ps"));
         });
 
         // Export
@@ -96,24 +100,24 @@ public class FileMenu extends JMenu {
         export.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         export.addActionListener(e -> {
-            if (Project.getCurrent() == null) {
+            if (ImagePanel.get().getImage() == null) {
                 return;
             }
-            Project.getCurrent().getImage().export();
+            ImagePanel.get().getImage().export();
         });
 
         // Close
         JMenuItem close = new JMenuItem("Close Image");
         close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.SHIFT_DOWN_MASK));
         close.addActionListener(e -> {
-
+            ImagePanel.get().setImage(null);
         });
 
         // Exit
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(e -> {
-            if (Project.getCurrent() != null) {
-                Project.getCurrent().save(null);
+            if (ImagePanel.get().getImage() != null) {
+                // TODO
             }
             System.exit(0);
         });

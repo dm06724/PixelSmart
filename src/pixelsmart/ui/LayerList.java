@@ -1,13 +1,13 @@
 package pixelsmart.ui;
 
+import java.awt.Dimension;
 import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
-import java.awt.Dimension;
-import pixelsmart.Project;
+
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
 
@@ -25,26 +25,26 @@ public class LayerList extends JList<Layer> {
         this.setPreferredSize(d);
 
         this.addListSelectionListener(e -> {
-            Image image = Project.getCurrent().getImage();
             Layer selected = this.getSelectedValue();
-            Layer current = image.getActiveLayer();
+            Layer current = ImagePanel.get().getActiveLayer();
 
             if (selected == null || selected == current) {
                 return;
             }
 
-            selected.setAsActive();
+            ImagePanel.get().setActiveLayer(selected);
         });
 
-        Image.onImageChanged.addListener((image) -> updateList(image));
+        Image.onImageChanged.addListener((image) -> updateList());
     }
 
-    public void updateList(Image image) {
-        if (Project.getCurrent() != null) {
-            Vector<Layer> layers = new Vector<>(image.getLayers());
+    public void updateList() {
+        if (ImagePanel.get().getImage() != null) {
+            ImagePanel panel = ImagePanel.get();
+            Vector<Layer> layers = new Vector<>(panel.getImage().getLayers());
             Collections.reverse(layers);
             this.setListData(layers);
-            this.setSelectedValue(image.getActiveLayer(), true);
+            this.setSelectedValue(panel.getActiveLayer(), true);
         }
     }
 }

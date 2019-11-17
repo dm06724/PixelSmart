@@ -33,18 +33,6 @@ public class ImageExporter {
         }
     }
 
-    public static BufferedImage loadWithDialog() {
-        JFileChooser fileChooser = new JFileChooser();
-
-        int result = fileChooser.showOpenDialog(MainWindow.getInstance());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            return load(file);
-        }
-
-        return null;
-    }
-
     public static BufferedImage load(File file) {
         try {
             return ImageIO.read(file);

@@ -65,10 +65,6 @@ public class Input extends MouseInputAdapter {
         if (e.getButton() == MouseEvent.BUTTON2) {
             mouse2Press = true;
         }
-
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            // TODO
-        }
     }
 
     @Override
@@ -84,18 +80,10 @@ public class Input extends MouseInputAdapter {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (Project.getCurrent() == null) {
-            return;
+        if (e.isAltDown()) {
+            double scroll = e.getWheelRotation();
+            MainWindow.getInstance().getPanel().zoomOut(scroll);
         }
-
-        if (!e.isAltDown()) {
-            return;
-        }
-
-        final double zoomModifier = 0.2;
-        double zoom = Project.getCurrent().getZoomLevel();
-        double scroll = e.getWheelRotation();
-        Project.getCurrent().setZoomLevel(zoom + zoom * scroll * zoomModifier);
     }
 
     public static int getMouseX() {

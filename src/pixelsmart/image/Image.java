@@ -11,7 +11,6 @@ public class Image implements Iterable<Layer> {
     private final ArrayList<Layer> layers;
     public static final ImageObservable onImageChanged = new ImageObservable();
 
-    private Layer activeLayer;
     private int width;
     private int height;
 
@@ -21,24 +20,6 @@ public class Image implements Iterable<Layer> {
 
         this.layers = new ArrayList<Layer>();
         this.addLayer("Layer 1");
-        setActiveLayer(0);
-    }
-
-    public Layer getActiveLayer() {
-        return activeLayer;
-    }
-
-    public void setActiveLayer(Layer layer) {
-        activeLayer = layer;
-        onImageChanged.notifyListeners(this);
-    }
-
-    public void setActiveLayer(int index) {
-        setActiveLayer(getLayerByIndex(index));
-    }
-
-    public void setActiveLayer(String name) {
-        setActiveLayer(getLayerByName(name));
     }
 
     public Layer getBaseLayer() {
@@ -79,7 +60,6 @@ public class Image implements Iterable<Layer> {
         if (index > 0) {
             layers.remove(layer);
             onImageChanged.notifyListeners(this);
-            setActiveLayer(0);
             return true;
         }
         return false;
@@ -126,7 +106,7 @@ public class Image implements Iterable<Layer> {
 
         for (Layer l : layers) {
             if (l.isVisible()) {
-                g.drawImage(l.getData(), l.getX(), l.getY(), null);
+                g.drawImage(l.getData(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), null);
             }
         }
 

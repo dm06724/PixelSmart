@@ -1,11 +1,11 @@
 package pixelsmart.tools;
 
-import pixelsmart.image.Image;
+import pixelsmart.ui.ImagePanel;
 
 public interface Tool {
-	public void startAction(Image image);
+	public void startAction(ImagePanel image);
 
-	public void updateAction(Image image);
+	public void updateAction(ImagePanel image);
 
-	public void finishAction(Image image);
+	public void finishAction(ImagePanel image);
 }

@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
+import pixelsmart.tools.ToolManager;
 import pixelsmart.ui.EditMenu;
 import pixelsmart.ui.FileMenu;
 import pixelsmart.ui.ImagePanel;
@@ -46,12 +47,13 @@ public class MainWindow extends JFrame {
 
 		JButton colorWheelButton = new JButton();
 		colorWheelButton.addActionListener(e -> {
-			if (Project.getCurrent() == null) {
+			if (ToolManager.getInstance() == null) {
 				return;
 			}
-			Color color = JColorChooser.showDialog(null, "Select Color", Project.getCurrent().getPrimaryBrushColor());
+			Color color = JColorChooser.showDialog(null, "Select Color",
+					ToolManager.getInstance().getPrimaryBrushColor());
 			colorWheelButton.setBackground(color);
-			Project.getCurrent().setPrimaryBrushColor(color);
+			ToolManager.getInstance().setPrimaryBrushColor(color);
 		});
 
 		attributeToolbar.add(new JLabel("Color"));
@@ -89,10 +91,7 @@ public class MainWindow extends JFrame {
 		while (running()) {
 			// Update
 			Input.getInstance().update();
-
-			if (Project.getCurrent() != null) {
-				Project.getCurrent().update();
-			}
+			ToolManager.getInstance().update();
 
 			// Render
 			imagePanel.repaint();

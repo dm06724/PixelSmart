@@ -3,7 +3,7 @@ package pixelsmart.commands;
 import java.awt.Color;
 
 import pixelsmart.BrushColorType;
-import pixelsmart.Project;
+import pixelsmart.tools.ToolManager;
 
 public class SetBrushColorCommand implements Command {
 
@@ -19,11 +19,11 @@ public class SetBrushColorCommand implements Command {
     @Override
     public void execute() {
         if (this.type == BrushColorType.PRIMARY) {
-            this.previousColor = Project.getCurrent().getPrimaryBrushColor();
-            Project.getCurrent().setPrimaryBrushColor(color);
+            this.previousColor = ToolManager.getInstance().getPrimaryBrushColor();
+            ToolManager.getInstance().setPrimaryBrushColor(color);
         } else if (this.type == BrushColorType.SECONDARY) {
-            this.previousColor = Project.getCurrent().getSecondaryBrushColor();
-            Project.getCurrent().setSecondaryBrushColor(color);
+            this.previousColor = ToolManager.getInstance().getSecondaryBrushColor();
+            ToolManager.getInstance().setSecondaryBrushColor(color);
         }
     }
 
@@ -33,9 +33,9 @@ public class SetBrushColorCommand implements Command {
             return;
 
         if (this.type == BrushColorType.PRIMARY) {
-            Project.getCurrent().setPrimaryBrushColor(previousColor);
+            ToolManager.getInstance().setPrimaryBrushColor(previousColor);
         } else if (this.type == BrushColorType.SECONDARY) {
-            Project.getCurrent().setSecondaryBrushColor(previousColor);
+            ToolManager.getInstance().setSecondaryBrushColor(previousColor);
         }
     }
 

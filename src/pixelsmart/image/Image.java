@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import pixelsmart.events.EventHandler;
+
 public class Image implements Iterable<Layer> {
 
     private final ArrayList<Layer> layers;
-    public static final ImageObservable onImageChanged = new ImageObservable();
+    public static final EventHandler<Image> onImageChanged = new EventHandler<Image>();
 
     private int width;
     private int height;

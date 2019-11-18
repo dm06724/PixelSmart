@@ -13,38 +13,38 @@ import pixelsmart.ui.ImagePanel;
 
 public class StencilTool extends DrawingTool {
 
-	private Path2D.Double finalStrokeShape;
-	private Shape shapeBehavior;
+    private Path2D.Double finalStrokeShape;
+    private Shape shapeBehavior;
 
-	@Override
-	public void startAction(final ImagePanel panel) {
-		finalStrokeShape = new Path2D.Double();
-	}
+    @Override
+    public void startAction(final ImagePanel panel) {
+        finalStrokeShape = new Path2D.Double();
+    }
 
-	@Override
-	public void updateAction(final ImagePanel panel) {
-		final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
-		final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+    @Override
+    public void updateAction(final ImagePanel panel) {
+        final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+        final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
-		finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
-	}
+        finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
+    }
 
-	@Override
-	public void finishAction(final ImagePanel panel) {
-		final Layer layer = panel.getActiveLayer();
-		final BufferedImage newData = layer.copyData();
-		final Graphics2D g = newData.createGraphics();
+    @Override
+    public void finishAction(final ImagePanel panel) {
+        final Layer layer = panel.getActiveLayer();
+        final BufferedImage newData = layer.copyData();
+        final Graphics2D g = newData.createGraphics();
 
-		g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
-		final BasicStroke stroke = new BasicStroke(ToolManager.getInstance().getBrushSize());
-		g.setStroke(stroke);
+        g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
+        final BasicStroke stroke = new BasicStroke(ToolManager.getInstance().getBrushSize());
+        g.setStroke(stroke);
 
-		g.draw(finalStrokeShape);
-		g.fill(finalStrokeShape);
+        g.draw(finalStrokeShape);
+        g.fill(finalStrokeShape);
 
-		final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
-		CommandList.getInstance().addCommand(c);
+        final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
+        CommandList.getInstance().addCommand(c);
 
-		g.dispose();
-	}
+        g.dispose();
+    }
 }

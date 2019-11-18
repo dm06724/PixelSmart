@@ -34,8 +34,8 @@ public class ImagePanel extends JPanel {
     private static final double MAX_ZOOM = 50.0;
     private static final long serialVersionUID = -5952682079799751735L;
     private static final Color BACKGROUND_COLOR = new Color(80, 80, 80);
-    private static BufferedImage transBackground;
 
+    private BufferedImage transBackground;
     private Image image;
     private Layer activeLayer;
     private double zoomLevel = 1;
@@ -92,20 +92,12 @@ public class ImagePanel extends JPanel {
         }
     }
 
-    private int getImageWidth() {
-        return image.getWidth();
-    }
-
-    private int getImageHeight() {
-        return image.getHeight();
-    }
-
     private int getImageViewWidth() {
-        return (int) (getImageWidth() * getZoom());
+        return (int) (image.getWidth() * getZoom());
     }
 
     private int getImageViewHeight() {
-        return (int) (getImageHeight() * getZoom());
+        return (int) (image.getHeight() * getZoom());
     }
 
     private int getImageViewOffsetX() {
@@ -131,7 +123,7 @@ public class ImagePanel extends JPanel {
             return x;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return MathUtil.map(x - imageRect.x, 0, imageRect.width, 0, getImageWidth());
+            return MathUtil.map(x - imageRect.x, 0, imageRect.width, 0, image.getWidth());
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
             return MathUtil.map(x - layerRect.x, 0, layerRect.width, 0, activeLayer.getWidth());
@@ -145,7 +137,7 @@ public class ImagePanel extends JPanel {
             return y;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return MathUtil.map(y - imageRect.y, 0, imageRect.height, 0, getImageHeight());
+            return MathUtil.map(y - imageRect.y, 0, imageRect.height, 0, image.getHeight());
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
             return MathUtil.map(y - layerRect.y, 0, layerRect.height, 0, activeLayer.getHeight());
@@ -159,7 +151,7 @@ public class ImagePanel extends JPanel {
             return x;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.x + MathUtil.map(x, 0, getImageWidth(), 0, imageRect.width);
+            return imageRect.x + MathUtil.map(x, 0, image.getWidth(), 0, imageRect.width);
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
             return layerRect.x + MathUtil.map(x - layerRect.x, 0, activeLayer.getWidth(), 0, layerRect.width);
@@ -173,7 +165,7 @@ public class ImagePanel extends JPanel {
             return y;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.y + MathUtil.map(y, 0, getImageHeight(), 0, imageRect.height);
+            return imageRect.y + MathUtil.map(y, 0, image.getHeight(), 0, imageRect.height);
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
             return layerRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, layerRect.height);

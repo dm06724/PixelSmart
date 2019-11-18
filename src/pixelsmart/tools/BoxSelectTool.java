@@ -10,8 +10,8 @@ public class BoxSelectTool implements Tool {
 
 	@Override
 	public void startAction(final ImagePanel panel) {
-		startX = panel.getMouseX();
-		startY = panel.getMouseY();
+		startX = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
+		startY = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
 	}
 
 	@Override
@@ -20,8 +20,8 @@ public class BoxSelectTool implements Tool {
 
 	@Override
 	public void finishAction(final ImagePanel panel) {
-		int mx = panel.getMouseX();
-		int my = panel.getMouseY();
+		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
+		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
 
 		int minX = Math.min(startX, mx);
 		int maxX = Math.max(startX, mx);

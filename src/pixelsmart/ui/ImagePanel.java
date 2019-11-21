@@ -87,8 +87,11 @@ public class ImagePanel extends JPanel {
 
         // TODO Draw Selection Clip Box
         if (this.clip != null) {
+        	AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(), getImageViewOffsetY());
+        	transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
+        	Shape s = transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
             g.setColor(Color.YELLOW);
-            g.draw(getClip(RELATIVE_TO_IMAGE));
+            g.draw(s);
         }
     }
 
@@ -245,10 +248,10 @@ public class ImagePanel extends JPanel {
         } else if (relativeTo == RELATIVE_TO_IMAGE) {
             return this.clip;
         } else if (relativeTo == RELATIVE_TO_LAYER) {
-            Rectangle shapeRect = clip.getBounds();
-            Rectangle layerRect = getLayerViewRect(activeLayer);
-
-            AffineTransform transform = transformRect(shapeRect, layerRect);
+        	if (activeLayer==null || clip == null) {
+        		return null;
+        	}
+            AffineTransform transform = AffineTransform.getTranslateInstance(-activeLayer.getX(), -activeLayer.getY());
             return transform.createTransformedShape(clip);
         } else {
             return this.clip;

@@ -16,6 +16,10 @@ public class EraserTool extends DrawingTool {
 
 	@Override
 	public void startAction(ImagePanel panel) {
+		if (panel.getActiveLayer() == null) {
+			return;
+		}
+
 		finalStrokeShape = new Path2D.Double();
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
@@ -24,6 +28,10 @@ public class EraserTool extends DrawingTool {
 
 	@Override
 	public void updateAction(ImagePanel panel) {
+		if (panel.getActiveLayer() == null) {
+			return;
+		}
+
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
@@ -32,6 +40,10 @@ public class EraserTool extends DrawingTool {
 
 	@Override
 	public void finishAction(ImagePanel panel) {
+		if (panel.getActiveLayer() == null) {
+			return;
+		}
+
 		Layer layer = panel.getActiveLayer();
 		BufferedImage newData = layer.copyData();
 		Graphics2D g = newData.createGraphics();

@@ -19,7 +19,7 @@ public class ZoomTool extends ToolAdapter {
 
 	@Override
 	public void finishAction(ImagePanel panel) {
-		// TODO rightclick zoom out
+		// TODO right click zoom out
 		zoomIn();
 	}
 }

@@ -18,11 +18,19 @@ public class StencilTool extends DrawingTool {
 
     @Override
     public void startAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
+
         finalStrokeShape = new Path2D.Double();
     }
 
     @Override
     public void updateAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
+
         final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
         final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
@@ -32,6 +40,11 @@ public class StencilTool extends DrawingTool {
     @Override
     public void finishAction(final ImagePanel panel) {
         final Layer layer = panel.getActiveLayer();
+
+        if (layer == null) {
+            return;
+        }
+
         final BufferedImage newData = layer.copyData();
         final Graphics2D g = newData.createGraphics();
 

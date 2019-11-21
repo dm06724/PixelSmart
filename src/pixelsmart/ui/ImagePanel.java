@@ -279,7 +279,7 @@ public class ImagePanel extends JPanel {
         return new Rectangle(imageViewRect.x + layerX, imageViewRect.y + layerY, layerWidth, layerHeight);
     }
 
-    private AffineTransform transformRect(Rectangle from, Rectangle to) {
+    public AffineTransform transformRect(Rectangle from, Rectangle to) {
         AffineTransform t = new AffineTransform();
         t.translate(to.getMinX(), to.getMinY());
         t.scale(to.getWidth() / from.getWidth(), to.getHeight() / from.getHeight());

@@ -9,6 +9,7 @@ import javax.swing.KeyStroke;
 import pixelsmart.tools.BoxSelectTool;
 import pixelsmart.tools.ColorPickerTool;
 import pixelsmart.tools.EraserTool;
+import pixelsmart.tools.LassoTool;
 import pixelsmart.tools.LineTool;
 import pixelsmart.tools.MoveTool;
 import pixelsmart.tools.PaintBucketTool;
@@ -78,12 +79,21 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         });
 
         /**
-         * Select Tool
+         * Box Select Tool
          */
         JMenuItem boxSelectTool = new JMenuItem("Box Select");
         boxSelectTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.SHIFT_DOWN_MASK));
         boxSelectTool.addActionListener(e -> {
             ToolManager.getInstance().setTool(new BoxSelectTool());
+        });
+
+        /**
+         * Box Select Tool
+         */
+        JMenuItem lassoSelectTool = new JMenuItem("Lasso Select");
+        lassoSelectTool.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.SHIFT_DOWN_MASK));
+        lassoSelectTool.addActionListener(e -> {
+            ToolManager.getInstance().setTool(new LassoTool());
         });
 
         /**
@@ -111,6 +121,7 @@ public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
         this.add(paintBucketTool);
         this.add(pencilTool);
         this.add(boxSelectTool);
+        this.add(lassoSelectTool);
         this.add(stencilTool);
         this.add(zoomTool);
     }

@@ -38,6 +38,8 @@ public class LineTool extends DrawingTool {
 
         Graphics2D g = newData.createGraphics();
 
+        g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
+
         g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
         BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g.setStroke(stroke);

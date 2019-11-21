@@ -48,6 +48,8 @@ public class EraserTool extends DrawingTool {
 		BufferedImage newData = layer.copyData();
 		Graphics2D g = newData.createGraphics();
 
+		g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
+
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 		BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 		g.setStroke(stroke);

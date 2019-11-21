@@ -54,6 +54,13 @@ public class MoveTool extends ToolAdapter {
         // }
         // }
 
+        int snapX = lx;
+        int snapY = ly;
+
+        for (Layer l : panel.getImage()){
+
+        }
+
         layer.setPosition(lx, ly);
     }
 }

@@ -32,6 +32,10 @@ public class CommandList {
 	}
 
 	public void addCommand(Command c) {
+		while (commands.size() > commandIndex + 1) {
+			commands.removeLast();
+		}
+
 		commands.add(c);
 		c.execute();
 		commandIndex = commands.size() - 1;
@@ -39,5 +43,9 @@ public class CommandList {
 		while (commands.size() > AMOUNT_OF_COMMANDS) {
 			commands.removeFirst();
 		}
+	}
+
+	public void clear() {
+		commands.clear();
 	}
 }

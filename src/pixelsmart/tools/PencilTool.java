@@ -49,7 +49,7 @@ public class PencilTool extends DrawingTool {
 		final BufferedImage newData = layer.copyData();
 		final Graphics2D g = newData.createGraphics();
 
-		// g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
+		g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
 
 		g.setColor(getColor());
 		final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);

@@ -2,17 +2,17 @@ package pixelsmart.ui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.text.NumberFormat;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import pixelsmart.commands.CommandList;
 import pixelsmart.image.Image;
 
 public class FileMenu extends JMenu {
@@ -21,7 +21,7 @@ public class FileMenu extends JMenu {
     public FileMenu() {
         super("File");
 
-        // New Image
+        // New Project
         JMenuItem newImage = new JMenuItem("New Project");
         newImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         newImage.addActionListener(e -> {
@@ -43,24 +43,23 @@ public class FileMenu extends JMenu {
                     break;
                 }
             }
-            NumberFormat format = NumberFormat.getInstance();
-            format.setParseIntegerOnly(true);
-            JFormattedTextField widthInput = new JFormattedTextField(format);
-            JFormattedTextField heightInput = new JFormattedTextField(format);
+            JTextField widthInput = new JTextField();
+            JTextField heightInput = new JTextField();
             widthInput.setText("64");
             heightInput.setText("64");
 
             final JComponent[] inputs = new JComponent[] { widthInput, heightInput };
 
-            int result = JOptionPane.showConfirmDialog(null, inputs, "Create New Project", JOptionPane.PLAIN_MESSAGE);
+            int result = JOptionPane.showConfirmDialog(MainWindow.getInstance(), inputs, "Create New Project", JOptionPane.PLAIN_MESSAGE);
             if (result == JOptionPane.OK_OPTION) {
                 try {
                     int width = Integer.parseInt(widthInput.getText());
                     int height = Integer.parseInt(heightInput.getText());
 
-                    // ToolManager.createNew(width, height);
+                    CommandList.getInstance().clear();
                     ImagePanel.get().setImage(new Image(width, height));
                 } catch (Exception ex) {
+                    CommandList.getInstance().clear();
                     ImagePanel.get().setImage(new Image(64, 64));
                 }
             } else {
@@ -68,7 +67,7 @@ public class FileMenu extends JMenu {
             }
         });
 
-        // Open Image
+        // Open Project (.ps)
         JMenuItem open = new JMenuItem("Open Project");
         open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         open.addActionListener(e -> {
@@ -83,7 +82,7 @@ public class FileMenu extends JMenu {
         });
 
         // Save
-        JMenuItem save = new JMenuItem("Save");
+        JMenuItem save = new JMenuItem("Save Project");
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         save.addActionListener(e -> {
             if (ImagePanel.get().getImage() == null) {
@@ -94,7 +93,7 @@ public class FileMenu extends JMenu {
         });
 
         // Export
-        JMenuItem export = new JMenuItem("Export");
+        JMenuItem export = new JMenuItem("Export Image");
         export.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         export.addActionListener(e -> {
@@ -105,7 +104,7 @@ public class FileMenu extends JMenu {
         });
 
         // Close
-        JMenuItem close = new JMenuItem("Close Image");
+        JMenuItem close = new JMenuItem("Close Project");
         close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.SHIFT_DOWN_MASK));
         close.addActionListener(e -> {
             ImagePanel.get().setImage(null);
@@ -124,6 +123,7 @@ public class FileMenu extends JMenu {
         this.add(open);
         this.add(save);
         this.add(close);
+        this.add(new JSeparator());
         this.add(export);
         this.add(new JSeparator());
         this.add(exit);

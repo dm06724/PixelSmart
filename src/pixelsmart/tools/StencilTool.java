@@ -13,38 +13,51 @@ import pixelsmart.ui.ImagePanel;
 
 public class StencilTool extends DrawingTool {
 
-	private Path2D.Double finalStrokeShape;
-	private Shape shapeBehavior;
+    private Path2D.Double finalStrokeShape;
+    private Shape shapeBehavior;
 
-	@Override
-	public void startAction(final ImagePanel panel) {
-		finalStrokeShape = new Path2D.Double();
-	}
+    @Override
+    public void startAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
 
-	@Override
-	public void updateAction(final ImagePanel panel) {
-		final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
-		final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+        finalStrokeShape = new Path2D.Double();
+    }
 
-		finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
-	}
+    @Override
+    public void updateAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
 
-	@Override
-	public void finishAction(final ImagePanel panel) {
-		final Layer layer = panel.getActiveLayer();
-		final BufferedImage newData = layer.copyData();
-		final Graphics2D g = newData.createGraphics();
+        final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+        final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
-		g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
-		final BasicStroke stroke = new BasicStroke(ToolManager.getInstance().getBrushSize());
-		g.setStroke(stroke);
+        finalStrokeShape.append(shapeBehavior.getPath(mx, my), false);
+    }
 
-		g.draw(finalStrokeShape);
-		g.fill(finalStrokeShape);
+    @Override
+    public void finishAction(final ImagePanel panel) {
+        final Layer layer = panel.getActiveLayer();
 
-		final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
-		CommandList.getInstance().addCommand(c);
+        if (layer == null) {
+            return;
+        }
 
-		g.dispose();
-	}
+        final BufferedImage newData = layer.copyData();
+        final Graphics2D g = newData.createGraphics();
+
+        g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
+        final BasicStroke stroke = new BasicStroke(ToolManager.getInstance().getBrushSize());
+        g.setStroke(stroke);
+
+        g.draw(finalStrokeShape);
+        g.fill(finalStrokeShape);
+
+        final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
+        CommandList.getInstance().addCommand(c);
+
+        g.dispose();
+    }
 }

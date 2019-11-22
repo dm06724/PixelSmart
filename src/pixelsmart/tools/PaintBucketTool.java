@@ -18,6 +18,10 @@ public class PaintBucketTool extends ToolAdapter {
 
 	@Override
 	public void finishAction(final ImagePanel panel) {
+		if (panel.getActiveLayer() == null) {
+			return;
+		}
+
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 		layer = panel.getActiveLayer();

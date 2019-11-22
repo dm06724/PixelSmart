@@ -15,6 +15,10 @@ public class LineTool extends DrawingTool {
 
     @Override
     public void startAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
+
         startMX = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
         startMY = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
     }
@@ -23,12 +27,18 @@ public class LineTool extends DrawingTool {
     public void finishAction(final ImagePanel panel) {
         Layer layer = panel.getActiveLayer();
 
+        if (layer == null) {
+            return;
+        }
+
         int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
         int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
         BufferedImage newData = layer.copyData();
 
         Graphics2D g = newData.createGraphics();
+
+        g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
 
         g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
         BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);

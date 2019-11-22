@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.TexturePaint;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,189 +17,276 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import pixelsmart.MathUtil;
+import pixelsmart.events.EventHandler;
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
 
 public class ImagePanel extends JPanel {
-	public static final int RELATIVE_TO_PANEL = 0;
-	public static final int RELATIVE_TO_IMAGE = 1;
-	public static final int RELATIVE_TO_LAYER = 2;
-	private static final double ZOOM_MULTIPLIER = 0.2f;
-	private static final double MIN_ZOOM = 0.2;
-	private static final double MAX_ZOOM = 50.0;
-	private static final long serialVersionUID = -5952682079799751735L;
-	private static final Color BACKGROUND_COLOR = new Color(80, 80, 80);
-	private static BufferedImage transBackground;
-	private Image image;
-	private Layer activeLayer;
-	private double zoomLevel = 1;
+    public static final int RELATIVE_TO_PANEL = 0;
+    public static final int RELATIVE_TO_IMAGE = 1;
+    public static final int RELATIVE_TO_LAYER = 2;
 
-	public ImagePanel() {
-		super(new BorderLayout(0, 0));
+    public static final EventHandler<Layer> onActiveLayerChanged = new EventHandler<Layer>();
+    public static final EventHandler<Integer> onZoomChanged = new EventHandler<Integer>();
 
-		try {
-			transBackground = ImageIO.read(new File("res/images/TransparentBackground.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    private static final double ZOOM_MULTIPLIER = 0.2f;
+    private static final double MIN_ZOOM = 0.2;
+    private static final double MAX_ZOOM = 50.0;
+    private static final long serialVersionUID = -5952682079799751735L;
+    private static final Color BACKGROUND_COLOR = new Color(80, 80, 80);
 
-	public static ImagePanel get() {
-		return MainWindow.getInstance().getPanel();
-	}
+    private BufferedImage transBackground;
+    private Image image;
+    private Layer activeLayer;
+    private double zoomLevel = 1;
+    private Path2D.Double clip;
 
-	@Override
-	public void paint(Graphics graphics) {
-		Graphics2D g = (Graphics2D) graphics;
+    public ImagePanel() {
+        super(new BorderLayout(0, 0));
 
-		g.setBackground(BACKGROUND_COLOR);
-		g.clearRect(0, 0, this.getWidth(), this.getHeight());
-		if (image == null) {
-			return;
-		}
+        try {
+            transBackground = ImageIO.read(new File("res/images/TransparentBackground.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		Rectangle rect = getImageRect();
+    public static ImagePanel get() {
+        return MainWindow.getInstance().getPanel();
+    }
 
-		TexturePaint backPaint = new TexturePaint(transBackground, new Rectangle(rect.x, rect.y, 20, 20));
+    @Override
+    public void paint(Graphics graphics) {
+        Graphics2D g = (Graphics2D) graphics;
 
-		g.setPaint(backPaint);
+        g.setBackground(BACKGROUND_COLOR);
+        g.clearRect(0, 0, this.getWidth(), this.getHeight());
+        if (image == null) {
+            return;
+        }
 
-		g.fill(rect);
+        Rectangle rect = getImageViewRect();
 
-		g.setPaint(null);
+        TexturePaint backPaint = new TexturePaint(transBackground, new Rectangle(rect.x, rect.y, 20, 20));
 
-		g.drawImage(image.getAggregatedData(), rect.x, rect.y, rect.width, rect.height, null);
+        g.setPaint(backPaint);
 
-		// Draw a box around active layer
-		if (activeLayer != null) {
-			Rectangle layerRect = getLayerRect(activeLayer);
-			g.setColor(Color.LIGHT_GRAY);
-			g.drawRect(layerRect.x, layerRect.y, layerRect.width, layerRect.height);
-		}
-	}
+        g.fill(rect);
 
-	private int getImageWidth() {
-		return image.getWidth();
-	}
+        g.setPaint(null);
 
-	private int getImageHeight() {
-		return image.getHeight();
-	}
+        // Draw the layers
+        g.drawImage(image.getAggregatedData(), rect.x, rect.y, rect.width, rect.height, null);
 
-	private int getImageViewWidth() {
-		return (int) (getImageWidth() * getZoom());
-	}
+        // Draw a box around active layer
+        if (activeLayer != null) {
+            Rectangle layerRect = getLayerViewRect(activeLayer);
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawRect(layerRect.x, layerRect.y, layerRect.width, layerRect.height);
+        }
 
-	private int getImageViewHeight() {
-		return (int) (getImageHeight() * getZoom());
-	}
+        // TODO Draw Selection Clip Box
+        if (this.clip != null) {
+        	AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(), getImageViewOffsetY());
+        	transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
+        	Shape s = transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
+            g.setColor(Color.YELLOW);
+            g.draw(s);
+        }
+    }
 
-	private int getImageViewOffsetX() {
-		return (this.getWidth() - getImageViewWidth()) / 2;
-	}
+    private int getImageViewWidth() {
+        return (int) (image.getWidth() * getZoom());
+    }
 
-	private int getImageViewOffsetY() {
-		return (this.getHeight() - getImageViewHeight()) / 2;
-	}
+    private int getImageViewHeight() {
+        return (int) (image.getHeight() * getZoom());
+    }
 
-	public int getMouseX() {
-		return Input.getMouseX();
-	}
+    private int getImageViewOffsetX() {
+        return (this.getWidth() - getImageViewWidth()) / 2;
+    }
 
-	public int getMouseY() {
-		return Input.getMouseY();
-	}
+    private int getImageViewOffsetY() {
+        return (this.getHeight() - getImageViewHeight()) / 2;
+    }
 
-	public int getMouseX(int relativeTo) {
-		switch (relativeTo) {
-		default:
-		case RELATIVE_TO_PANEL:
-			return getMouseX();
-		case RELATIVE_TO_IMAGE:
-			Rectangle imageRect = getImageRect();
-			return MathUtil.map(getMouseX() - imageRect.x, 0, imageRect.width, 0, getImageWidth());
-		case RELATIVE_TO_LAYER:
-			Rectangle layerRect = getLayerRect(activeLayer);
-			return MathUtil.map(getMouseX() - layerRect.x, 0, layerRect.width, 0, activeLayer.getWidth());
-		}
-	}
+    public int getMouseX() {
+        return Input.getMouseX();
+    }
 
-	public int getMouseY(int relativeTo) {
-		switch (relativeTo) {
-		default:
-		case RELATIVE_TO_PANEL:
-			return getMouseY();
-		case RELATIVE_TO_IMAGE:
-			Rectangle imageRect = getImageRect();
-			return MathUtil.map(getMouseY() - imageRect.y, 0, imageRect.height, 0, getImageHeight());
-		case RELATIVE_TO_LAYER:
-			Rectangle layerRect = getLayerRect(activeLayer);
-			return MathUtil.map(getMouseY() - layerRect.y, 0, layerRect.height, 0, activeLayer.getHeight());
-		}
-	}
+    public int getMouseY() {
+        return Input.getMouseY();
+    }
 
-	public Image getImage() {
-		return this.image;
-	}
+    public int transformX(int x, int relativeTo) {
+        switch (relativeTo) {
+        default:
+        case RELATIVE_TO_PANEL:
+            return x;
+        case RELATIVE_TO_IMAGE:
+            Rectangle imageRect = getImageViewRect();
+            return MathUtil.map(x - imageRect.x, 0, imageRect.width, 0, image.getWidth());
+        case RELATIVE_TO_LAYER:
+            Rectangle layerRect = getLayerViewRect(activeLayer);
+            return MathUtil.map(x - layerRect.x, 0, layerRect.width, 0, activeLayer.getWidth());
+        }
+    }
 
-	public void setImage(Image image) {
-		this.image = image;
-		this.activeLayer = image.getBaseLayer();
-	}
+    public int transformY(int y, int relativeTo) {
+        switch (relativeTo) {
+        default:
+        case RELATIVE_TO_PANEL:
+            return y;
+        case RELATIVE_TO_IMAGE:
+            Rectangle imageRect = getImageViewRect();
+            return MathUtil.map(y - imageRect.y, 0, imageRect.height, 0, image.getHeight());
+        case RELATIVE_TO_LAYER:
+            Rectangle layerRect = getLayerViewRect(activeLayer);
+            return MathUtil.map(y - layerRect.y, 0, layerRect.height, 0, activeLayer.getHeight());
+        }
+    }
 
-	public Layer getActiveLayer() {
-		return this.activeLayer;
-	}
+    public int inverseTransformX(int x, int relativeTo) {
+        switch (relativeTo) {
+        default:
+        case RELATIVE_TO_PANEL:
+            return x;
+        case RELATIVE_TO_IMAGE:
+            Rectangle imageRect = getImageViewRect();
+            return imageRect.x + MathUtil.map(x, 0, image.getWidth(), 0, imageRect.width);
+        case RELATIVE_TO_LAYER:
+            Rectangle layerRect = getLayerViewRect(activeLayer);
+            return layerRect.x + MathUtil.map(x - layerRect.x, 0, activeLayer.getWidth(), 0, layerRect.width);
+        }
+    }
 
-	public void setActiveLayer(Layer layer) {
-		this.activeLayer = layer;
-	}
+    public int inverseTransformY(int y, int relativeTo) {
+        switch (relativeTo) {
+        default:
+        case RELATIVE_TO_PANEL:
+            return y;
+        case RELATIVE_TO_IMAGE:
+            Rectangle imageRect = getImageViewRect();
+            return imageRect.y + MathUtil.map(y, 0, image.getHeight(), 0, imageRect.height);
+        case RELATIVE_TO_LAYER:
+            Rectangle layerRect = getLayerViewRect(activeLayer);
+            return layerRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, layerRect.height);
+        }
+    }
 
-	public void setActiveLayer(int index) {
-		setActiveLayer(image.getLayerByIndex(index));
-	}
+    public int getMouseX(int relativeTo) {
+        return transformX(getMouseX(), relativeTo);
+    }
 
-	public void setActiveLayer(String name) {
-		setActiveLayer(image.getLayerByName(name));
-	}
+    public int getMouseY(int relativeTo) {
+        return transformY(getMouseY(), relativeTo);
+    }
 
-	public void setZoom(double level) {
-		zoomLevel = MathUtil.clamp(level, MIN_ZOOM, MAX_ZOOM);
-	}
+    public Image getImage() {
+        return this.image;
+    }
 
-	public void zoomIn() {
-		setZoom(zoomLevel + zoomLevel * ZOOM_MULTIPLIER);
-	}
+    public void setImage(Image image) {
+        this.image = image;
 
-	public void zoomOut() {
-		setZoom(zoomLevel - zoomLevel * ZOOM_MULTIPLIER);
-	}
+        setActiveLayer(image != null ? image.getBaseLayer() : null);
+    }
 
-	public void zoomIn(double multiplier) {
-		setZoom(zoomLevel + zoomLevel * multiplier * ZOOM_MULTIPLIER);
-	}
+    public Layer getActiveLayer() {
+        return this.activeLayer;
+    }
 
-	public void zoomOut(double multiplier) {
-		setZoom(zoomLevel - zoomLevel * multiplier * ZOOM_MULTIPLIER);
-	}
+    public void setActiveLayer(Layer layer) {
+        Layer old = this.activeLayer;
+        this.activeLayer = layer;
 
-	public double getZoom() {
-		return this.zoomLevel;
-	}
+        if (layer != old) {
+            onActiveLayerChanged.notifyListeners(layer);
+        }
+    }
 
-	public Rectangle getImageRect() {
-		return new Rectangle(getImageViewOffsetX(), getImageViewOffsetY(), getImageViewWidth(), getImageViewWidth());
-	}
+    public void setActiveLayer(int index) {
+        setActiveLayer(image.getLayerByIndex(index));
+    }
 
-	public Rectangle getLayerRect(Layer layer) {
-		if (layer == null) {
-			return null;
-		}
-		Rectangle imageRect = getImageRect();
-		int layerX = (int) (layer.getX() * getZoom());
-		int layerY = (int) (layer.getY() * getZoom());
-		int layerWidth = (int) (layer.getWidth() * getZoom());
-		int layerHeight = (int) (layer.getHeight() * getZoom());
-		return new Rectangle(imageRect.x + layerX, imageRect.y + layerY, layerWidth, layerHeight);
-	}
+    public void setActiveLayer(String name) {
+        setActiveLayer(image.getLayerByName(name));
+    }
+
+    public void setZoom(double level) {
+        zoomLevel = MathUtil.clamp(level, MIN_ZOOM, MAX_ZOOM);
+    }
+
+    public void zoomIn() {
+        setZoom(zoomLevel + zoomLevel * ZOOM_MULTIPLIER);
+    }
+
+    public void zoomOut() {
+        setZoom(zoomLevel - zoomLevel * ZOOM_MULTIPLIER);
+    }
+
+    public void zoomIn(double multiplier) {
+        setZoom(zoomLevel + zoomLevel * multiplier * ZOOM_MULTIPLIER);
+    }
+
+    public void zoomOut(double multiplier) {
+        setZoom(zoomLevel - zoomLevel * multiplier * ZOOM_MULTIPLIER);
+    }
+
+    public double getZoom() {
+        return this.zoomLevel;
+    }
+
+    public Shape getClip(int relativeTo) {
+        if (relativeTo == RELATIVE_TO_PANEL) {
+            Rectangle shapeRect = clip.getBounds();
+            Rectangle panelRect = getRect();
+
+            AffineTransform transform = transformRect(shapeRect, panelRect);
+            return transform.createTransformedShape(clip);
+        } else if (relativeTo == RELATIVE_TO_IMAGE) {
+            return this.clip;
+        } else if (relativeTo == RELATIVE_TO_LAYER) {
+        	if (activeLayer==null || clip == null) {
+        		return null;
+        	}
+            AffineTransform transform = AffineTransform.getTranslateInstance(-activeLayer.getX(), -activeLayer.getY());
+            return transform.createTransformedShape(clip);
+        } else {
+            return this.clip;
+        }
+    }
+
+    public void setClip(Shape clip) {
+        this.clip = new Path2D.Double(clip);
+    }
+
+    public Rectangle getRect() {
+        return new Rectangle(0, 0, this.getWidth(), this.getHeight());
+    }
+
+    public Rectangle getImageViewRect() {
+        return new Rectangle(getImageViewOffsetX(), getImageViewOffsetY(), getImageViewWidth(), getImageViewWidth());
+    }
+
+    public Rectangle getLayerViewRect(Layer layer) {
+        if (layer == null) {
+            return null;
+        }
+        Rectangle imageViewRect = getImageViewRect();
+        int layerX = (int) (layer.getX() * getZoom());
+        int layerY = (int) (layer.getY() * getZoom());
+        int layerWidth = (int) (layer.getWidth() * getZoom());
+        int layerHeight = (int) (layer.getHeight() * getZoom());
+        return new Rectangle(imageViewRect.x + layerX, imageViewRect.y + layerY, layerWidth, layerHeight);
+    }
+
+    public AffineTransform transformRect(Rectangle from, Rectangle to) {
+        AffineTransform t = new AffineTransform();
+        t.translate(to.getMinX(), to.getMinY());
+        t.scale(to.getWidth() / from.getWidth(), to.getHeight() / from.getHeight());
+        t.translate(-from.getMinX(), -from.getMinY());
+        return t;
+    }
 }

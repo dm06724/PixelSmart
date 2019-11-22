@@ -18,8 +18,10 @@ public class LayerList extends JList<Layer> {
         TitledBorder border = new TitledBorder("Layers");
         border.setTitlePosition(TitledBorder.TOP);
         border.setTitleJustification(TitledBorder.CENTER);
+
         this.setBorder(border);
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         Dimension d = this.getPreferredSize();
         d.width = 100;
         this.setPreferredSize(d);
@@ -35,16 +37,24 @@ public class LayerList extends JList<Layer> {
             ImagePanel.get().setActiveLayer(selected);
         });
 
-        Image.onImageChanged.addListener((image) -> updateList());
+        Image.onImageChanged.addListener(image -> updateList(image));
+        ImagePanel.onActiveLayerChanged.addListener(layer -> updateSelection());
     }
 
-    public void updateList() {
-        if (ImagePanel.get().getImage() != null) {
-            ImagePanel panel = ImagePanel.get();
-            Vector<Layer> layers = new Vector<>(panel.getImage().getLayers());
-            Collections.reverse(layers);
-            this.setListData(layers);
-            this.setSelectedValue(panel.getActiveLayer(), true);
+    public void updateList(Image image) {
+        if (image == null) {
+            this.setListData(new Layer[] {});
+            return;
         }
+
+        Vector<Layer> layers = new Vector<>(image.getLayers());
+        Collections.reverse(layers);
+
+        this.setListData(layers);
+        this.updateSelection();
+    }
+
+    public void updateSelection() {
+        this.setSelectedValue(ImagePanel.get().getActiveLayer(), true);
     }
 }

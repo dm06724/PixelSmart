@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import pixelsmart.ui.ImagePanel;
 import pixelsmart.ui.Input;
-import pixelsmart.ui.MainWindow;
 
 public class ToolManager {
 
@@ -26,8 +25,8 @@ public class ToolManager {
     }
 
     public void update() {
-        ImagePanel panel = MainWindow.getInstance().getPanel();
-        if (panel != null && tool != null) {
+        ImagePanel panel = ImagePanel.get();
+        if (tool != null) {
             if (Input.getMouseButtonDown(0)) {
                 tool.startAction(panel);
             } else if (Input.getMouseButton(0)) {

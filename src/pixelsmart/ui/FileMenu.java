@@ -1,7 +1,6 @@
 package pixelsmart.ui;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -75,7 +74,7 @@ public class FileMenu extends JMenu {
 
             int result = fileChooser.showSaveDialog(MainWindow.getInstance());
             if (result == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
+                //File file = fileChooser.getSelectedFile();
                 // TODO SWITCH TO IMAGE
                 // ToolManager.load(file);
             }

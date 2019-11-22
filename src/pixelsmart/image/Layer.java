@@ -1,6 +1,7 @@
 package pixelsmart.image;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -101,6 +102,10 @@ public class Layer {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public Rectangle getRect() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
     public boolean isVisible() {

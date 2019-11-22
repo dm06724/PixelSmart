@@ -22,6 +22,8 @@ import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
 
 public class ImagePanel extends JPanel {
+    private static final long serialVersionUID = -5952682079799751735L;
+
     public static final int RELATIVE_TO_PANEL = 0;
     public static final int RELATIVE_TO_IMAGE = 1;
     public static final int RELATIVE_TO_LAYER = 2;
@@ -32,7 +34,6 @@ public class ImagePanel extends JPanel {
     private static final double ZOOM_MULTIPLIER = 0.2f;
     private static final double MIN_ZOOM = 0.2;
     private static final double MAX_ZOOM = 50.0;
-    private static final long serialVersionUID = -5952682079799751735L;
     private static final Color BACKGROUND_COLOR = new Color(80, 80, 80);
 
     private BufferedImage transBackground;
@@ -85,11 +86,11 @@ public class ImagePanel extends JPanel {
             g.drawRect(layerRect.x, layerRect.y, layerRect.width, layerRect.height);
         }
 
-        // TODO Draw Selection Clip Box
         if (this.clip != null) {
-        	AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(), getImageViewOffsetY());
-        	transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
-        	Shape s = transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
+            AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(),
+                    getImageViewOffsetY());
+            transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
+            Shape s = transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
             g.setColor(Color.YELLOW);
             g.draw(s);
         }
@@ -119,6 +120,9 @@ public class ImagePanel extends JPanel {
         return Input.getMouseY();
     }
 
+    /**
+     * Transforms a x position from panel space to another space
+     */
     public int transformX(int x, int relativeTo) {
         switch (relativeTo) {
         default:
@@ -133,6 +137,9 @@ public class ImagePanel extends JPanel {
         }
     }
 
+    /**
+     * Transforms a y position from panel space to another space
+     */
     public int transformY(int y, int relativeTo) {
         switch (relativeTo) {
         default:
@@ -147,6 +154,9 @@ public class ImagePanel extends JPanel {
         }
     }
 
+    /**
+     * Transforms an x position from one space to panel space
+     */
     public int inverseTransformX(int x, int relativeTo) {
         switch (relativeTo) {
         default:
@@ -154,13 +164,16 @@ public class ImagePanel extends JPanel {
             return x;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.x + MathUtil.map(x, 0, image.getWidth(), 0, imageRect.width);
+            return imageRect.x + MathUtil.map(x, 0, image.getWidth(), 0, this.getWidth());
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
-            return layerRect.x + MathUtil.map(x - layerRect.x, 0, activeLayer.getWidth(), 0, layerRect.width);
+            return layerRect.x + MathUtil.map(x - layerRect.x, 0, activeLayer.getWidth(), 0, this.getWidth());
         }
     }
 
+    /**
+     * Transforms a y position from one space to panel space
+     */
     public int inverseTransformY(int y, int relativeTo) {
         switch (relativeTo) {
         default:
@@ -168,10 +181,10 @@ public class ImagePanel extends JPanel {
             return y;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.y + MathUtil.map(y, 0, image.getHeight(), 0, imageRect.height);
+            return imageRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, this.getHeight());
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
-            return layerRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, layerRect.height);
+            return layerRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, this.getHeight());
         }
     }
 
@@ -248,9 +261,9 @@ public class ImagePanel extends JPanel {
         } else if (relativeTo == RELATIVE_TO_IMAGE) {
             return this.clip;
         } else if (relativeTo == RELATIVE_TO_LAYER) {
-        	if (activeLayer==null || clip == null) {
-        		return null;
-        	}
+            if (activeLayer == null || clip == null) {
+                return null;
+            }
             AffineTransform transform = AffineTransform.getTranslateInstance(-activeLayer.getX(), -activeLayer.getY());
             return transform.createTransformedShape(clip);
         } else {

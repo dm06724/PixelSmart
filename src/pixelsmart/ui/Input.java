@@ -6,11 +6,15 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.event.MouseInputAdapter;
 
 public class Input extends MouseInputAdapter {
+    public static final int LEFT_MOUSE = 0;
+    public static final int RIGHT_MOUSE = 1;
+
+    private static Input instance;
 
     private int mouseX, mouseY;
-    private boolean mouse1WasPressed, mouse1IsPressed, mouse2WasPressed, mouse2IsPressed;
-    private boolean mouse1Press, mouse2Press;
-    private static Input instance;
+    private final boolean[] mouseIsPressed = { false, false };
+    private final boolean[] mouseWasPressed = { false, false };
+    private boolean[] mousePress = { false, false };
 
     private Input() {
 
@@ -25,23 +29,23 @@ public class Input extends MouseInputAdapter {
     }
 
     protected void update() {
-        mouse1WasPressed = mouse1IsPressed;
-        mouse2WasPressed = mouse2IsPressed;
+        mouseWasPressed[LEFT_MOUSE] = mouseIsPressed[LEFT_MOUSE];
+        mouseWasPressed[RIGHT_MOUSE] = mouseIsPressed[RIGHT_MOUSE];
 
-        mouse1IsPressed = mouse1Press;
-        mouse2IsPressed = mouse2Press;
+        mouseIsPressed[LEFT_MOUSE] = mousePress[LEFT_MOUSE];
+        mouseIsPressed[RIGHT_MOUSE] = mousePress[RIGHT_MOUSE];
     }
 
     public static boolean getMouseButtonDown(int button) {
-        return getInstance().mouse1IsPressed && !getInstance().mouse1WasPressed;
+        return getInstance().mouseIsPressed[button] && !getInstance().mouseWasPressed[button];
     }
 
     public static boolean getMouseButtonUp(int button) {
-        return !getInstance().mouse1IsPressed && getInstance().mouse1WasPressed;
+        return !getInstance().mouseIsPressed[button] && getInstance().mouseWasPressed[button];
     }
 
     public static boolean getMouseButton(int button) {
-        return getInstance().mouse1IsPressed && getInstance().mouse1WasPressed;
+        return getInstance().mouseIsPressed[button] && getInstance().mouseWasPressed[button];
     }
 
     @Override
@@ -59,22 +63,22 @@ public class Input extends MouseInputAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            mouse1Press = true;
+            mousePress[LEFT_MOUSE] = true;
         }
 
         if (e.getButton() == MouseEvent.BUTTON2) {
-            mouse2Press = true;
+            mousePress[RIGHT_MOUSE] = true;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            mouse1Press = false;
+            mousePress[LEFT_MOUSE] = false;
         }
 
         if (e.getButton() == MouseEvent.BUTTON1) {
-            mouse2Press = false;
+            mousePress[RIGHT_MOUSE] = false;
         }
     }
 

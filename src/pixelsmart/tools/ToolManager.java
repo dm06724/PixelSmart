@@ -27,11 +27,11 @@ public class ToolManager {
     public void update() {
         ImagePanel panel = ImagePanel.get();
         if (tool != null) {
-            if (Input.getMouseButtonDown(0)) {
+            if (Input.getMouseButtonDown(Input.LEFT_MOUSE)) {
                 tool.startAction(panel);
-            } else if (Input.getMouseButton(0)) {
+            } else if (Input.getMouseButton(Input.LEFT_MOUSE)) {
                 tool.updateAction(panel);
-            } else if (Input.getMouseButtonUp(0)) {
+            } else if (Input.getMouseButtonUp(Input.LEFT_MOUSE)) {
                 tool.finishAction(panel);
             }
         }

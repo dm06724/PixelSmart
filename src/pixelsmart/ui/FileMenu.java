@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 
 import pixelsmart.commands.CommandList;
 import pixelsmart.image.Image;
+import pixelsmart.image.ImageExporter;
 
 public class FileMenu extends JMenu {
     private static final long serialVersionUID = -9140684398793551793L;
@@ -49,7 +50,8 @@ public class FileMenu extends JMenu {
 
             final JComponent[] inputs = new JComponent[] { widthInput, heightInput };
 
-            int result = JOptionPane.showConfirmDialog(MainWindow.getInstance(), inputs, "Create New Project", JOptionPane.PLAIN_MESSAGE);
+            int result = JOptionPane.showConfirmDialog(MainWindow.getInstance(), inputs, "Create New Project",
+                    JOptionPane.PLAIN_MESSAGE);
             if (result == JOptionPane.OK_OPTION) {
                 try {
                     int width = Integer.parseInt(widthInput.getText());
@@ -74,7 +76,7 @@ public class FileMenu extends JMenu {
 
             int result = fileChooser.showSaveDialog(MainWindow.getInstance());
             if (result == JFileChooser.APPROVE_OPTION) {
-                //File file = fileChooser.getSelectedFile();
+                // File file = fileChooser.getSelectedFile();
                 // TODO SWITCH TO IMAGE
                 // ToolManager.load(file);
             }
@@ -84,11 +86,7 @@ public class FileMenu extends JMenu {
         JMenuItem save = new JMenuItem("Save Project");
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         save.addActionListener(e -> {
-            if (ImagePanel.get().getImage() == null) {
-                return;
-            }
-            // TODO
-            // ToolManager.getCurrent().save(new File("test.ps"));
+            promptSaveProject();
         });
 
         // Export
@@ -113,7 +111,7 @@ public class FileMenu extends JMenu {
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(e -> {
             if (ImagePanel.get().getImage() != null) {
-                // TODO
+
             }
             System.exit(0);
         });
@@ -126,5 +124,20 @@ public class FileMenu extends JMenu {
         this.add(export);
         this.add(new JSeparator());
         this.add(exit);
+    }
+
+    private void promptSaveProject() {
+        Image image = ImagePanel.get().getImage();
+        if (image == null) {
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        int result = fileChooser.showSaveDialog(MainWindow.getInstance());
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            ImageExporter.saveImage(image, fileChooser.getSelectedFile());
+        }
     }
 }

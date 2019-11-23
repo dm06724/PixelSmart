@@ -10,7 +10,7 @@ import pixelsmart.commands.UpdateLayerDataCommand;
 import pixelsmart.image.Layer;
 import pixelsmart.ui.ImagePanel;
 
-public class PaintBucketTool extends ToolAdapter {
+public class PaintBucketTool extends DrawingTool {
 
 	BufferedImage newData;
 	Layer layer;
@@ -27,7 +27,7 @@ public class PaintBucketTool extends ToolAdapter {
 		layer = panel.getActiveLayer();
 		newData = layer.copyData();
 		tc = newData.getRGB(mx, my);
-		rc = ToolManager.getInstance().getPrimaryBrushColor().getRGB();
+		rc = getColor().getRGB();
 		if (tc == rc)
 			return;
 		floodFill(mx, my);

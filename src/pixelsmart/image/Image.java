@@ -7,11 +7,12 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 import pixelsmart.events.EventHandler;
+import pixelsmart.events.EventListener;
 
 public class Image implements Iterable<Layer> {
 
     private final ArrayList<Layer> layers;
-    public static final EventHandler<Image> onImageChanged = new EventHandler<Image>();
+    private final EventHandler<Image> onImageUpdated = new EventHandler<Image>();
 
     private int width;
     private int height;
@@ -34,7 +35,7 @@ public class Image implements Iterable<Layer> {
         if (layers.contains(layer))
             layers.remove(layer);
         layers.add(0, layer);
-        onImageChanged.notifyListeners(this);
+        onImageUpdated.notifyListeners(this);
     }
 
     public Layer addLayer(String name) {
@@ -44,7 +45,7 @@ public class Image implements Iterable<Layer> {
 
         Layer layer = new Layer(this, name);
         layers.add(layer);
-        onImageChanged.notifyListeners(this);
+        onImageUpdated.notifyListeners(this);
 
         return layer;
     }
@@ -61,7 +62,7 @@ public class Image implements Iterable<Layer> {
         int index = getLayerIndex(layer);
         if (index > 0) {
             layers.remove(layer);
-            onImageChanged.notifyListeners(this);
+            onImageUpdated.notifyListeners(this);
             return true;
         }
         return false;
@@ -82,7 +83,7 @@ public class Image implements Iterable<Layer> {
 
         layers.remove(layer);
         layers.add(index, layer);
-        onImageChanged.notifyListeners(this);
+        onImageUpdated.notifyListeners(this);
     }
 
     public int getLayerIndex(Layer layer) {
@@ -157,5 +158,13 @@ public class Image implements Iterable<Layer> {
 
     public boolean containsLayer(Predicate<Layer> pred) {
         return findLayer(pred) != null;
+    }
+
+    public void addUpdateListener(EventListener<Image> listener){
+        onImageUpdated.addListener(listener);
+    }
+
+    public void removeUpdateListener(EventListener<Image> listener){
+        onImageUpdated.removeListener(listener);
     }
 }

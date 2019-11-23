@@ -3,7 +3,6 @@ package pixelsmart.tools;
 import java.awt.Color;
 
 import pixelsmart.ui.ImagePanel;
-import pixelsmart.ui.Input;
 
 public class ToolManager {
 
@@ -11,7 +10,7 @@ public class ToolManager {
     private Color primaryBrushColor = Color.BLACK;
     private Color secondaryBrushColor = Color.WHITE;
     private int brushSize = 10;
-    private Tool tool;
+    private AbstractTool tool;
 
     private ToolManager() {
         this.tool = new PencilTool();
@@ -26,14 +25,8 @@ public class ToolManager {
 
     public void update() {
         ImagePanel panel = ImagePanel.get();
-        if (tool != null) {
-            if (Input.getMouseButtonDown(0)) {
-                tool.startAction(panel);
-            } else if (Input.getMouseButton(0)) {
-                tool.updateAction(panel);
-            } else if (Input.getMouseButtonUp(0)) {
-                tool.finishAction(panel);
-            }
+        if (panel.getImage() != null && tool != null) {
+            tool.update(panel);
         }
     }
 
@@ -61,11 +54,11 @@ public class ToolManager {
         this.brushSize = size;
     }
 
-    public void setTool(Tool tool) {
+    public void setTool(AbstractTool tool) {
         this.tool = tool;
     }
 
-    public Tool getTool() {
+    public AbstractTool getTool() {
         return this.tool;
     }
 }

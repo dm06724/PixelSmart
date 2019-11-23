@@ -61,15 +61,11 @@ public class MainWindow extends JFrame {
 
 		this.setJMenuBar(menuBar);
 
-		LayerList layerList = new LayerList();
+		LayerList layerList = new LayerList(imagePanel);
 
 		contentPane.add(attributeToolbar, BorderLayout.SOUTH);
 		contentPane.add(layerList, BorderLayout.EAST);
 		contentPane.add(imagePanel, BorderLayout.CENTER);
-
-		imagePanel.addMouseMotionListener(Input.getInstance());
-		imagePanel.addMouseListener(Input.getInstance());
-		imagePanel.addMouseWheelListener(Input.getInstance());
 	}
 
 	public static synchronized MainWindow getInstance() {

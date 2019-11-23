@@ -2,20 +2,19 @@ package pixelsmart.tools;
 
 import pixelsmart.ui.ImagePanel;
 
-public class DebugTool implements Tool {
+public class DebugTool extends AbstractTool {
 
     @Override
-    public void startAction(ImagePanel image) {
-        System.out.println(image);
+    public void startAction(ImagePanel panel) {
+        System.out.println(panel);
     }
 
     @Override
-    public void updateAction(ImagePanel image) {
+    public void updateAction(ImagePanel panel) {
 
     }
 
     @Override
-    public void finishAction(ImagePanel image) {
+    public void finishAction(ImagePanel panel) {
     }
-
 }

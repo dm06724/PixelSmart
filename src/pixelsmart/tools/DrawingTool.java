@@ -11,4 +11,8 @@ public abstract class DrawingTool extends ToolAdapter {
     protected Color getColor() {
         return ToolManager.getInstance().getPrimaryBrushColor();
     }
+
+    protected Color getSecondaryColor(){
+        return ToolManager.getInstance().getSecondaryBrushColor();
+    }
 }

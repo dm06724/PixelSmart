@@ -38,5 +38,4 @@ public class SetBrushColorCommand implements Command {
             ToolManager.getInstance().setSecondaryBrushColor(previousColor);
         }
     }
-
 }

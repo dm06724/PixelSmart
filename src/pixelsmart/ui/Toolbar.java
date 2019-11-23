@@ -1,19 +1,14 @@
-import java.awt.BorderLayout;
+package pixelsmart.ui;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
 
-public class Toolbar extends JFrame {
-
-    /*
-    public static void main(String[] args) {
-        Toolbar t = new Toolbar();
-        t.setVisible(true);
-    }
-    */
-
+public class Toolbar extends JToolBar {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -833808924744341165L;
     JToolBar toolbar;
     JButton pencil;
     JButton eraser;
@@ -21,22 +16,26 @@ public class Toolbar extends JFrame {
     JButton type;
     JButton zoom;
     JButton square_select;
-    JButton circle_select;
+    JButton circle_select; // TODO lasso, not just circle
 
     public Toolbar() {
-        setSize(400, 400);
-        setTitle("Toolbar test");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ImageIcon pencilImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\pencil x2.png");
-        ImageIcon eraserImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\eraser x2.png");
-        ImageIcon fillImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Fill x2.png");
-        ImageIcon typeImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Type x2.png");
-        ImageIcon zoomImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Zoom x2.png");
-        ImageIcon square_selectImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select x2.png");
-        ImageIcon circle_selectImage = new ImageIcon("C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select_Circle x2.png");
+        // TODO put images in /res/images
+        ImageIcon pencilImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\pencil x2.png");
+        ImageIcon eraserImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\eraser x2.png");
+        ImageIcon fillImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Fill x2.png");
+        ImageIcon typeImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Type x2.png");
+        ImageIcon zoomImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Zoom x2.png");
+        ImageIcon square_selectImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select x2.png");
+        ImageIcon circle_selectImage = new ImageIcon(
+                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select_Circle x2.png");
 
-        toolbar = new JToolBar();
         pencil = new JButton(pencilImage);
         eraser = new JButton(eraserImage);
         fill = new JButton(fillImage);
@@ -45,15 +44,12 @@ public class Toolbar extends JFrame {
         square_select = new JButton(square_selectImage);
         circle_select = new JButton(circle_selectImage);
 
-
-        toolbar.add(pencil);
-        toolbar.add(eraser);
-        toolbar.add(fill);
-        toolbar.add(type);
-        toolbar.add(zoom);
-        toolbar.add(square_select);
-        toolbar.add(circle_select);
-        // toolbar.setFloatable(false); // REMOVE COMMENT IF YOU DON'T WANT TOOLBAR TO BE MOVEABLE
-        add(toolbar, BorderLayout.NORTH);
+        this.add(pencil);
+        this.add(eraser);
+        this.add(fill);
+        this.add(type);
+        this.add(zoom);
+        this.add(square_select);
+        this.add(circle_select);
     }
 }

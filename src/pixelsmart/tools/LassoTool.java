@@ -2,10 +2,12 @@ package pixelsmart.tools;
 
 import java.awt.geom.Path2D;
 
+import pixelsmart.commands.CommandList;
+import pixelsmart.commands.SetClipShapeCommand;
 import pixelsmart.ui.ImagePanel;
 
-public class LassoTool implements Tool {
-    private Path2D.Double finalStrokeShape;
+public class LassoTool extends AbstractTool {
+    private final Path2D.Double clipShape = new Path2D.Double();
 
     @Override
     public void startAction(final ImagePanel panel) {
@@ -13,10 +15,11 @@ public class LassoTool implements Tool {
             return;
         }
 
-        finalStrokeShape = new Path2D.Double();
         int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
         int my = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
-        finalStrokeShape.moveTo(mx, my);
+
+        clipShape.reset();
+        clipShape.moveTo(mx, my);
     }
 
     @Override
@@ -28,12 +31,14 @@ public class LassoTool implements Tool {
         int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
         int my = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
 
-        finalStrokeShape.lineTo(mx, my);
+        clipShape.lineTo(mx, my);
     }
 
     @Override
     public void finishAction(final ImagePanel panel) {
-        finalStrokeShape.closePath();
-        panel.setClip(finalStrokeShape);
+        clipShape.closePath();
+
+        SetClipShapeCommand command = new SetClipShapeCommand(panel, clipShape);
+        CommandList.getInstance().addCommand(command);
     }
 }

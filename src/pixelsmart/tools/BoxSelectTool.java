@@ -2,9 +2,11 @@ package pixelsmart.tools;
 
 import java.awt.Rectangle;
 
+import pixelsmart.commands.CommandList;
+import pixelsmart.commands.SetClipShapeCommand;
 import pixelsmart.ui.ImagePanel;
 
-public class BoxSelectTool implements Tool {
+public class BoxSelectTool extends ToolAdapter {
 
 	int startX, startY;
 
@@ -12,10 +14,6 @@ public class BoxSelectTool implements Tool {
 	public void startAction(final ImagePanel panel) {
 		startX = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
 		startY = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
-	}
-
-	@Override
-	public void updateAction(final ImagePanel panel) {
 	}
 
 	@Override
@@ -30,7 +28,8 @@ public class BoxSelectTool implements Tool {
 
 		Rectangle clip = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 
-		panel.setClip(clip);
+		SetClipShapeCommand command = new SetClipShapeCommand(panel, clip);
+		CommandList.getInstance().addCommand(command);
 	}
 
 }

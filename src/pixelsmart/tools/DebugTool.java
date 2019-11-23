@@ -2,7 +2,7 @@ package pixelsmart.tools;
 
 import pixelsmart.ui.ImagePanel;
 
-public class DebugTool implements Tool {
+public class DebugTool extends AbstractTool {
 
     @Override
     public void startAction(ImagePanel panel) {

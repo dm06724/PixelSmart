@@ -12,54 +12,53 @@ import pixelsmart.ui.ImagePanel;
 
 public class PencilTool extends DrawingTool {
 
-	private Path2D.Double finalStrokeShape;
+    private Path2D.Double finalStrokeShape;
 
-	@Override
-	public void startAction(final ImagePanel panel) {
-		if (panel.getActiveLayer() == null) {
-			return;
-		}
-		final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
-		final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+    @Override
+    public void startAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
+        final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+        final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
-		finalStrokeShape = new Path2D.Double();
-		finalStrokeShape.moveTo(mx, my);
-	}
+        finalStrokeShape = new Path2D.Double();
+        finalStrokeShape.moveTo(mx, my);
+    }
 
-	@Override
-	public void updateAction(final ImagePanel panel) {
-		if (panel.getActiveLayer() == null) {
-			return;
-		}
+    @Override
+    public void updateAction(final ImagePanel panel) {
+        if (panel.getActiveLayer() == null) {
+            return;
+        }
 
-		final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
-		final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+        final int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+        final int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 
-		finalStrokeShape.lineTo(mx, my);
-	}
+        finalStrokeShape.lineTo(mx, my);
+    }
 
-	@Override
-	public void finishAction(final ImagePanel panel) {
-		final Layer layer = panel.getActiveLayer();
+    @Override
+    public void finishAction(final ImagePanel panel) {
+        final Layer layer = panel.getActiveLayer();
 
-		if (layer == null) {
-			return;
-		}
+        if (layer == null) {
+            return;
+        }
 
-		final BufferedImage newData = layer.copyData();
-		final Graphics2D g = newData.createGraphics();
+        final BufferedImage newData = layer.copyData();
+        final Graphics2D g = newData.createGraphics();
 
-		g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
+        g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
 
-		g.setColor(getColor());
-		final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-		g.setStroke(stroke);
+        g.setColor(getColor());
+        final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g.setStroke(stroke);
 
-		g.draw(finalStrokeShape);
+        g.draw(finalStrokeShape);
+        g.dispose();
 
-		final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
-		CommandList.getInstance().addCommand(c);
-
-		g.dispose();
-	}
+        final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
+        CommandList.getInstance().addCommand(c);
+    }
 }

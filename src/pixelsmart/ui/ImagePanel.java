@@ -16,10 +16,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import pixelsmart.MathUtil;
 import pixelsmart.events.EventHandler;
+import pixelsmart.events.EventListener;
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
+import pixelsmart.util.MathUtil;
 
 public class ImagePanel extends JPanel {
     private static final long serialVersionUID = -5952682079799751735L;
@@ -28,8 +29,9 @@ public class ImagePanel extends JPanel {
     public static final int RELATIVE_TO_IMAGE = 1;
     public static final int RELATIVE_TO_LAYER = 2;
 
-    public static final EventHandler<Layer> onActiveLayerChanged = new EventHandler<Layer>();
-    public static final EventHandler<Integer> onZoomChanged = new EventHandler<Integer>();
+    private final EventHandler<Layer> onActiveLayerChanged = new EventHandler<Layer>();
+    private final EventHandler<Integer> onZoomChanged = new EventHandler<Integer>();
+    private final EventHandler<Image> onImageChanged = new EventHandler<Image>();
 
     private static final double ZOOM_MULTIPLIER = 0.2f;
     private static final double MIN_ZOOM = 0.2;
@@ -39,6 +41,8 @@ public class ImagePanel extends JPanel {
     private BufferedImage transBackground;
     private Image image;
     private Layer activeLayer;
+    private int imageOffsetX;
+    private int imageOffsetY;
     private double zoomLevel = 1;
     private Path2D.Double clip;
 
@@ -50,6 +54,10 @@ public class ImagePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.addMouseMotionListener(Input.getInstance());
+        this.addMouseListener(Input.getInstance());
+        this.addMouseWheelListener(Input.getInstance());
     }
 
     public static ImagePanel get() {
@@ -105,23 +113,28 @@ public class ImagePanel extends JPanel {
     }
 
     private int getImageViewOffsetX() {
-        return (this.getWidth() - getImageViewWidth()) / 2;
+        return imageOffsetX + (this.getWidth() - getImageViewWidth()) / 2;
     }
 
     private int getImageViewOffsetY() {
-        return (this.getHeight() - getImageViewHeight()) / 2;
+        return imageOffsetY + (this.getHeight() - getImageViewHeight()) / 2;
     }
 
-    public int getMouseX() {
-        return Input.getMouseX();
+    public void setImageOffsetX(int offset) {
+        this.imageOffsetX = offset;
     }
 
-    public int getMouseY() {
-        return Input.getMouseY();
+    public void setImageOffsetY(int offset) {
+        this.imageOffsetY = offset;
+    }
+
+    public void setImageOffset(int x, int y) {
+        this.imageOffsetX = x;
+        this.imageOffsetY = y;
     }
 
     /**
-     * Transforms a x position from panel space to another space
+     * Transforms a x position from panel space to another space.
      */
     public int transformX(int x, int relativeTo) {
         switch (relativeTo) {
@@ -138,7 +151,7 @@ public class ImagePanel extends JPanel {
     }
 
     /**
-     * Transforms a y position from panel space to another space
+     * Transforms a y position from panel space to another space.
      */
     public int transformY(int y, int relativeTo) {
         switch (relativeTo) {
@@ -155,7 +168,7 @@ public class ImagePanel extends JPanel {
     }
 
     /**
-     * Transforms an x position from one space to panel space
+     * Transforms an x position from one space to panel space.
      */
     public int inverseTransformX(int x, int relativeTo) {
         switch (relativeTo) {
@@ -164,15 +177,15 @@ public class ImagePanel extends JPanel {
             return x;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.x + MathUtil.map(x, 0, image.getWidth(), 0, this.getWidth());
+            return MathUtil.map(x, 0, image.getWidth(), imageRect.x, imageRect.x + imageRect.width);
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
-            return layerRect.x + MathUtil.map(x - layerRect.x, 0, activeLayer.getWidth(), 0, this.getWidth());
+            return MathUtil.map(x, 0, activeLayer.getWidth(), layerRect.x, layerRect.x + layerRect.width);
         }
     }
 
     /**
-     * Transforms a y position from one space to panel space
+     * Transforms a y position from one space to panel space.
      */
     public int inverseTransformY(int y, int relativeTo) {
         switch (relativeTo) {
@@ -181,19 +194,19 @@ public class ImagePanel extends JPanel {
             return y;
         case RELATIVE_TO_IMAGE:
             Rectangle imageRect = getImageViewRect();
-            return imageRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, this.getHeight());
+            return MathUtil.map(y, 0, image.getHeight(), imageRect.y, imageRect.y + imageRect.height);
         case RELATIVE_TO_LAYER:
             Rectangle layerRect = getLayerViewRect(activeLayer);
-            return layerRect.y + MathUtil.map(y, 0, activeLayer.getHeight(), 0, this.getHeight());
+            return MathUtil.map(y, 0, activeLayer.getHeight(), layerRect.y, layerRect.y + layerRect.height);
         }
     }
 
     public int getMouseX(int relativeTo) {
-        return transformX(getMouseX(), relativeTo);
+        return transformX(Input.getMouseX(), relativeTo);
     }
 
     public int getMouseY(int relativeTo) {
-        return transformY(getMouseY(), relativeTo);
+        return transformY(Input.getMouseY(), relativeTo);
     }
 
     public Image getImage() {
@@ -201,7 +214,12 @@ public class ImagePanel extends JPanel {
     }
 
     public void setImage(Image image) {
+        Image old = this.image;
         this.image = image;
+
+        if (old != image){
+            onImageChanged.notifyListeners(image);
+        }
 
         setActiveLayer(image != null ? image.getBaseLayer() : null);
     }
@@ -232,11 +250,11 @@ public class ImagePanel extends JPanel {
     }
 
     public void zoomIn() {
-        setZoom(zoomLevel + zoomLevel * ZOOM_MULTIPLIER);
+        zoomIn(1);
     }
 
     public void zoomOut() {
-        setZoom(zoomLevel - zoomLevel * ZOOM_MULTIPLIER);
+        zoomOut(1);
     }
 
     public void zoomIn(double multiplier) {
@@ -245,6 +263,54 @@ public class ImagePanel extends JPanel {
 
     public void zoomOut(double multiplier) {
         setZoom(zoomLevel - zoomLevel * multiplier * ZOOM_MULTIPLIER);
+    }
+
+    /**
+     * Zooms in around a point in image space.
+     * 
+     * @param multiplier Scales how much to zoom by
+     * @param aroundX    The x-coord to zoom around
+     * @param aroundY    The y-coord to zoom around
+     */
+    public void zoomInAround(double multiplier, int aroundX, int aroundY) {
+        int startX = inverseTransformX(aroundX, RELATIVE_TO_IMAGE);
+        int startY = inverseTransformY(aroundY, RELATIVE_TO_IMAGE);
+
+        zoomIn(multiplier);
+
+        int finishX = inverseTransformX(aroundX, RELATIVE_TO_IMAGE);
+        int finishY = inverseTransformY(aroundY, RELATIVE_TO_IMAGE);
+
+        imageOffsetX -= finishX - startX;
+        imageOffsetY -= finishY - startY;
+    }
+
+    /**
+     * Zooms out around a point in image space.
+     * 
+     * @param multiplier Scales how much to zoom
+     * @param aroundX    The x-coord to zoom around
+     * @param aroundY    The y-coord to zoom around
+     */
+    public void zoomOutAround(double multiplier, int aroundX, int aroundY) {
+        int startX = inverseTransformX(aroundX, RELATIVE_TO_IMAGE);
+        int startY = inverseTransformY(aroundY, RELATIVE_TO_IMAGE);
+
+        zoomOut(multiplier);
+
+        int finishX = inverseTransformX(aroundX, RELATIVE_TO_IMAGE);
+        int finishY = inverseTransformY(aroundY, RELATIVE_TO_IMAGE);
+
+        imageOffsetX -= finishX - startX;
+        imageOffsetY -= finishY - startY;
+    }
+
+    public void zoomInAround(int aroundX, int aroundY) {
+        zoomInAround(1, aroundX, aroundY);
+    }
+
+    public void zoomOutAround(int aroundX, int aroundY) {
+        zoomOutAround(1, aroundX, aroundY);
     }
 
     public double getZoom() {
@@ -301,5 +367,29 @@ public class ImagePanel extends JPanel {
         t.scale(to.getWidth() / from.getWidth(), to.getHeight() / from.getHeight());
         t.translate(-from.getMinX(), -from.getMinY());
         return t;
+    }
+
+    public void addZoomListener(EventListener<Integer> listener) {
+        onZoomChanged.addListener(listener);
+    }
+
+    public void removeZoomListener(EventListener<Integer> listener) {
+        onZoomChanged.removeListener(listener);
+    }
+
+    public void addActiveLayerChangedListener(EventListener<Layer> listener) {
+        onActiveLayerChanged.addListener(listener);
+    }
+
+    public void removeActiveLayerChangedListener(EventListener<Layer> listener) {
+        onActiveLayerChanged.removeListener(listener);
+    }
+
+    public void addImageChangedListener(EventListener<Image> listener) {
+        onImageChanged.addListener(listener);
+    }
+
+    public void removeImageChangedListener(EventListener<Image> listener) {
+        onImageChanged.removeListener(listener);
     }
 }

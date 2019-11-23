@@ -1,4 +1,4 @@
-package pixelsmart;
+package pixelsmart.util;
 
 public class MathUtil {
     public static double clamp(double a, double min, double max) {

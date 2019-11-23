@@ -14,7 +14,7 @@ import pixelsmart.image.Layer;
 public class LayerList extends JList<Layer> {
     private static final long serialVersionUID = -5953911805394394364L;
 
-    public LayerList() {
+    public LayerList(ImagePanel panel) {
         TitledBorder border = new TitledBorder("Layers");
         border.setTitlePosition(TitledBorder.TOP);
         border.setTitleJustification(TitledBorder.CENTER);
@@ -37,8 +37,8 @@ public class LayerList extends JList<Layer> {
             ImagePanel.get().setActiveLayer(selected);
         });
 
-        Image.onImageChanged.addListener(image -> updateList(image));
-        ImagePanel.onActiveLayerChanged.addListener(layer -> updateSelection());
+        panel.addImageChangedListener(image -> updateListeners(image));
+        panel.addActiveLayerChangedListener(layer -> updateSelection());
     }
 
     public void updateList(Image image) {
@@ -52,6 +52,10 @@ public class LayerList extends JList<Layer> {
 
         this.setListData(layers);
         this.updateSelection();
+    }
+
+    private void updateListeners(Image image) {
+        image.addUpdateListener(i -> updateList(i));
     }
 
     public void updateSelection() {

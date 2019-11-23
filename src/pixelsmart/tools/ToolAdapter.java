@@ -2,7 +2,7 @@ package pixelsmart.tools;
 
 import pixelsmart.ui.ImagePanel;
 
-public abstract class ToolAdapter implements Tool {
+public abstract class ToolAdapter extends AbstractTool {
     @Override
     public void startAction(ImagePanel panel) {
         

@@ -48,8 +48,8 @@ public class StencilTool extends DrawingTool {
         final BufferedImage newData = layer.copyData();
         final Graphics2D g = newData.createGraphics();
 
-        g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
-        final BasicStroke stroke = new BasicStroke(ToolManager.getInstance().getBrushSize());
+        g.setColor(getColor());
+        final BasicStroke stroke = new BasicStroke(getBrushSize());
         g.setStroke(stroke);
 
         g.draw(finalStrokeShape);

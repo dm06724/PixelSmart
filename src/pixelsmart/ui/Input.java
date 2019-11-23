@@ -12,6 +12,7 @@ public class Input extends MouseInputAdapter {
     private static Input instance;
 
     private int mouseX, mouseY;
+    private int scoll;
     private final boolean[] mouseIsPressed = { false, false };
     private final boolean[] mouseWasPressed = { false, false };
     private boolean[] mousePress = { false, false };
@@ -20,7 +21,7 @@ public class Input extends MouseInputAdapter {
 
     }
 
-    public static synchronized Input getInstance() {
+    protected static synchronized Input getInstance() {
         if (instance == null) {
             instance = new Input();
         }
@@ -48,6 +49,22 @@ public class Input extends MouseInputAdapter {
         return getInstance().mouseIsPressed[button] && getInstance().mouseWasPressed[button];
     }
 
+    public static boolean getAnyMouseButtonDown() {
+        return getMouseButtonDown(Input.LEFT_MOUSE) || getMouseButtonDown(Input.RIGHT_MOUSE);
+    }
+
+    public static boolean getAnyMouseButtonUp() {
+        return getMouseButtonUp(Input.LEFT_MOUSE) || getMouseButtonUp(Input.RIGHT_MOUSE);
+    }
+
+    public static boolean getAnyMouseButton() {
+        return getMouseButton(Input.LEFT_MOUSE) || getMouseButton(Input.RIGHT_MOUSE);
+    }
+
+    public static int getScroll(){
+        return getInstance().scoll;
+    }
+
     @Override
     public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
@@ -66,7 +83,7 @@ public class Input extends MouseInputAdapter {
             mousePress[LEFT_MOUSE] = true;
         }
 
-        if (e.getButton() == MouseEvent.BUTTON2) {
+        if (e.getButton() == MouseEvent.BUTTON3) {
             mousePress[RIGHT_MOUSE] = true;
         }
     }
@@ -77,16 +94,18 @@ public class Input extends MouseInputAdapter {
             mousePress[LEFT_MOUSE] = false;
         }
 
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (e.getButton() == MouseEvent.BUTTON3) {
             mousePress[RIGHT_MOUSE] = false;
         }
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        int mx = ImagePanel.get().getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
+        int my = ImagePanel.get().getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
         if (e.isAltDown()) {
             double scroll = e.getWheelRotation();
-            MainWindow.getInstance().getPanel().zoomOut(scroll);
+            MainWindow.getInstance().getPanel().zoomOutAround(scroll, mx, my);
         }
     }
 

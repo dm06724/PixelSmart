@@ -7,7 +7,7 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
-import pixelsmart.MathUtil;
+import pixelsmart.util.MathUtil;
 import pixelsmart.ui.ImagePanel;
 import pixelsmart.ui.MainWindow;
 

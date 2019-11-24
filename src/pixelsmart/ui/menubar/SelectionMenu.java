@@ -51,7 +51,7 @@ public class SelectionMenu extends JMenu {
 
         this.add(deselect);
         this.add(new JSeparator());
-        this.add(scaleUp);
-        this.add(scaleDown);
+        //this.add(scaleUp);
+        //this.add(scaleDown);
     }
 }

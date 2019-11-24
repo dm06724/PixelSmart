@@ -1,4 +1,4 @@
-package pixelsmart.ui;
+package pixelsmart.ui.menubar;
 
 import java.awt.event.KeyEvent;
 
@@ -13,7 +13,9 @@ import javax.swing.KeyStroke;
 
 import pixelsmart.commands.CommandList;
 import pixelsmart.image.Image;
-import pixelsmart.image.ImageExporter;
+import pixelsmart.ui.ImagePanel;
+import pixelsmart.ui.MainWindow;
+import pixelsmart.util.ImageExporter;
 
 public class FileMenu extends JMenu {
     private static final long serialVersionUID = -9140684398793551793L;
@@ -94,10 +96,11 @@ public class FileMenu extends JMenu {
         export.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         export.addActionListener(e -> {
-            if (ImagePanel.get().getImage() == null) {
+            Image image = ImagePanel.get().getImage();
+            if (image == null) {
                 return;
             }
-            ImagePanel.get().getImage().export();
+            ImageExporter.exportWithDialog(image.getAggregatedData(), "png");
         });
 
         // Close

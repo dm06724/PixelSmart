@@ -8,11 +8,15 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
+import pixelsmart.events.EventListener;
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
 
 public class LayerList extends JList<Layer> {
     private static final long serialVersionUID = -5953911805394394364L;
+
+    private final EventListener<Image> imageChangedListener;
+    private final EventListener<Layer> activeLayerChangedListener;
 
     public LayerList(ImagePanel panel) {
         TitledBorder border = new TitledBorder("Layers");
@@ -37,8 +41,11 @@ public class LayerList extends JList<Layer> {
             ImagePanel.get().setActiveLayer(selected);
         });
 
-        panel.addImageChangedListener(image -> updateListeners(image));
-        panel.addActiveLayerChangedListener(layer -> updateSelection());
+        imageChangedListener = image -> updateListeners(image);
+        activeLayerChangedListener = layer -> updateSelection();
+
+        panel.addImageChangedListener(imageChangedListener);
+        panel.addActiveLayerChangedListener(activeLayerChangedListener);
     }
 
     public void updateList(Image image) {
@@ -55,7 +62,7 @@ public class LayerList extends JList<Layer> {
     }
 
     private void updateListeners(Image image) {
-        image.addUpdateListener(i -> updateList(i));
+        image.addLayersModifiedListener(i -> updateList(i));
     }
 
     public void updateSelection() {

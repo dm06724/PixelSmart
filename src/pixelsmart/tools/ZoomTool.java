@@ -9,6 +9,7 @@ public class ZoomTool extends ToolAdapter {
     public void finishAction(ImagePanel panel) {
         int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_IMAGE);
         int my = panel.getMouseY(ImagePanel.RELATIVE_TO_IMAGE);
+
         if (Input.getMouseButtonUp(Input.LEFT_MOUSE))
             panel.zoomInAround(mx, my);
         else if (Input.getMouseButtonUp(Input.RIGHT_MOUSE))

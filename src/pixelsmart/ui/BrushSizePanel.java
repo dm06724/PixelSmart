@@ -10,13 +10,13 @@ import javax.swing.JTextField;
 
 import pixelsmart.tools.ToolManager;
 
-public class SliderWithText extends JPanel {
+public class BrushSizePanel extends JPanel {
 	private static final long serialVersionUID = 2243280863502885654L;
 	static JTextField text;
 	static JSlider slider;
 	static JLabel label;
 
-	public SliderWithText() {
+	public BrushSizePanel() {
 
 		slider = new JSlider(JSlider.HORIZONTAL, 1, 50, 10); // orientation, min, max, where it starts
 		slider.setMajorTickSpacing(2); // increments of 5 from 0 to 20

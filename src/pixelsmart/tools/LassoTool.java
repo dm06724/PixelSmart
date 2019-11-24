@@ -38,7 +38,7 @@ public class LassoTool extends AbstractTool {
     public void finishAction(final ImagePanel panel) {
         clipShape.closePath();
 
-        SetClipShapeCommand command = new SetClipShapeCommand(panel, clipShape);
+        SetClipShapeCommand command = new SetClipShapeCommand(clipShape);
         CommandList.getInstance().addCommand(command);
     }
 }

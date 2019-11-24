@@ -30,8 +30,10 @@ public class ImagePanel extends JPanel {
     public static final int RELATIVE_TO_LAYER = 2;
 
     private final EventHandler<Layer> onActiveLayerChanged = new EventHandler<Layer>();
-    private final EventHandler<Integer> onZoomChanged = new EventHandler<Integer>();
+    private final EventHandler<Double> onZoomChanged = new EventHandler<Double>();
     private final EventHandler<Image> onImageChanged = new EventHandler<Image>();
+    private final EventListener<Layer> addLayerListener;
+    private final EventListener<Layer> deleteLayerListener;
 
     private static final double ZOOM_MULTIPLIER = 0.2f;
     private static final double MIN_ZOOM = 0.2;
@@ -54,6 +56,9 @@ public class ImagePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        addLayerListener = layer -> setActiveLayer(layer);
+        deleteLayerListener = layer -> setActiveLayer(0);
 
         this.addMouseMotionListener(Input.getInstance());
         this.addMouseListener(Input.getInstance());
@@ -95,12 +100,9 @@ public class ImagePanel extends JPanel {
         }
 
         if (this.clip != null) {
-            AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(),
-                    getImageViewOffsetY());
-            transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
-            Shape s = transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
+
             g.setColor(Color.YELLOW);
-            g.draw(s);
+            g.draw(getClip(RELATIVE_TO_PANEL));
         }
     }
 
@@ -215,10 +217,21 @@ public class ImagePanel extends JPanel {
 
     public void setImage(Image image) {
         Image old = this.image;
-        this.image = image;
 
-        if (old != image){
-            onImageChanged.notifyListeners(image);
+        if (image == old) {
+            return;
+        }
+
+        this.image = image;
+        onImageChanged.notifyListeners(image);
+
+        if (old != null) {
+            old.removeLayerAddedListener(addLayerListener);
+            old.removeLayerDeletedListener(deleteLayerListener);
+        }
+        if (image != null) {
+            image.addLayerAddedListener(addLayerListener);
+            image.addLayerDeletedListener(deleteLayerListener);
         }
 
         setActiveLayer(image != null ? image.getBaseLayer() : null);
@@ -246,7 +259,12 @@ public class ImagePanel extends JPanel {
     }
 
     public void setZoom(double level) {
+        double old = zoomLevel;
         zoomLevel = MathUtil.clamp(level, MIN_ZOOM, MAX_ZOOM);
+
+        if (zoomLevel != old) {
+            onZoomChanged.notifyListeners(zoomLevel);
+        }
     }
 
     public void zoomIn() {
@@ -319,13 +337,10 @@ public class ImagePanel extends JPanel {
 
     public Shape getClip(int relativeTo) {
         if (relativeTo == RELATIVE_TO_PANEL) {
-            Rectangle shapeRect = clip.getBounds();
-            Rectangle panelRect = getRect();
-
-            AffineTransform transform = transformRect(shapeRect, panelRect);
-            return transform.createTransformedShape(clip);
-        } else if (relativeTo == RELATIVE_TO_IMAGE) {
-            return this.clip;
+            AffineTransform transform = AffineTransform.getTranslateInstance(getImageViewOffsetX(),
+                    getImageViewOffsetY());
+            transform.concatenate(AffineTransform.getScaleInstance(getZoom(), getZoom()));
+            return transform.createTransformedShape(getClip(RELATIVE_TO_IMAGE));
         } else if (relativeTo == RELATIVE_TO_LAYER) {
             if (activeLayer == null || clip == null) {
                 return null;
@@ -338,7 +353,7 @@ public class ImagePanel extends JPanel {
     }
 
     public void setClip(Shape clip) {
-        this.clip = new Path2D.Double(clip);
+        this.clip = clip == null ? null : new Path2D.Double(clip);
     }
 
     public Rectangle getRect() {
@@ -361,19 +376,11 @@ public class ImagePanel extends JPanel {
         return new Rectangle(imageViewRect.x + layerX, imageViewRect.y + layerY, layerWidth, layerHeight);
     }
 
-    public AffineTransform transformRect(Rectangle from, Rectangle to) {
-        AffineTransform t = new AffineTransform();
-        t.translate(to.getMinX(), to.getMinY());
-        t.scale(to.getWidth() / from.getWidth(), to.getHeight() / from.getHeight());
-        t.translate(-from.getMinX(), -from.getMinY());
-        return t;
-    }
-
-    public void addZoomListener(EventListener<Integer> listener) {
+    public void addZoomListener(EventListener<Double> listener) {
         onZoomChanged.addListener(listener);
     }
 
-    public void removeZoomListener(EventListener<Integer> listener) {
+    public void removeZoomListener(EventListener<Double> listener) {
         onZoomChanged.removeListener(listener);
     }
 

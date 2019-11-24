@@ -1,13 +1,16 @@
-package pixelsmart.image;
+package pixelsmart.util;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
-import pixelsmart.util.MathUtil;
+import pixelsmart.image.Image;
+import pixelsmart.image.Layer;
 import pixelsmart.ui.ImagePanel;
 import pixelsmart.ui.MainWindow;
 

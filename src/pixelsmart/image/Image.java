@@ -12,7 +12,9 @@ import pixelsmart.events.EventListener;
 public class Image implements Iterable<Layer> {
 
     private final ArrayList<Layer> layers;
-    private final EventHandler<Image> onImageUpdated = new EventHandler<Image>();
+    private final EventHandler<Image> onLayersModified = new EventHandler<Image>();
+    private final EventHandler<Layer> onAddLayer = new EventHandler<Layer>();
+    private final EventHandler<Layer> onDeleteLayer = new EventHandler<Layer>();
 
     private int width;
     private int height;
@@ -35,7 +37,7 @@ public class Image implements Iterable<Layer> {
         if (layers.contains(layer))
             layers.remove(layer);
         layers.add(0, layer);
-        onImageUpdated.notifyListeners(this);
+        onLayersModified.notifyListeners(this);
     }
 
     public Layer addLayer(String name) {
@@ -45,7 +47,8 @@ public class Image implements Iterable<Layer> {
 
         Layer layer = new Layer(this, name);
         layers.add(layer);
-        onImageUpdated.notifyListeners(this);
+        onAddLayer.notifyListeners(layer);
+        onLayersModified.notifyListeners(this);
 
         return layer;
     }
@@ -58,11 +61,21 @@ public class Image implements Iterable<Layer> {
         return layer;
     }
 
+    public void addLayer(Layer layer) {
+        if (layers.contains(layer)) {
+            return;
+        }
+        layers.add(layer);
+        onAddLayer.notifyListeners(layer);
+        onLayersModified.notifyListeners(this);
+    }
+
     public boolean removeLayer(Layer layer) {
         int index = getLayerIndex(layer);
         if (index > 0) {
             layers.remove(layer);
-            onImageUpdated.notifyListeners(this);
+            onDeleteLayer.notifyListeners(layer);
+            onLayersModified.notifyListeners(this);
             return true;
         }
         return false;
@@ -83,7 +96,7 @@ public class Image implements Iterable<Layer> {
 
         layers.remove(layer);
         layers.add(index, layer);
-        onImageUpdated.notifyListeners(this);
+        onLayersModified.notifyListeners(this);
     }
 
     public int getLayerIndex(Layer layer) {
@@ -116,10 +129,6 @@ public class Image implements Iterable<Layer> {
         g.dispose();
 
         return combined;
-    }
-
-    public void export() {
-        ImageExporter.exportWithDialog(this.getAggregatedData(), "png");
     }
 
     private boolean isValidLayerIndex(int index) {
@@ -160,11 +169,27 @@ public class Image implements Iterable<Layer> {
         return findLayer(pred) != null;
     }
 
-    public void addUpdateListener(EventListener<Image> listener){
-        onImageUpdated.addListener(listener);
+    public void addLayersModifiedListener(EventListener<Image> listener) {
+        onLayersModified.addListener(listener);
     }
 
-    public void removeUpdateListener(EventListener<Image> listener){
-        onImageUpdated.removeListener(listener);
+    public void removeLayersModifiedListener(EventListener<Image> listener) {
+        onLayersModified.removeListener(listener);
+    }
+
+    public void addLayerAddedListener(EventListener<Layer> listener) {
+        onAddLayer.addListener(listener);
+    }
+
+    public void removeLayerAddedListener(EventListener<Layer> listener) {
+        onAddLayer.removeListener(listener);
+    }
+
+    public void addLayerDeletedListener(EventListener<Layer> listener) {
+        onDeleteLayer.addListener(listener);
+    }
+
+    public void removeLayerDeletedListener(EventListener<Layer> listener) {
+        onDeleteLayer.removeListener(listener);
     }
 }

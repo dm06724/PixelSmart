@@ -9,12 +9,17 @@ import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
 import pixelsmart.image.Layer;
 import pixelsmart.shapes.Shape;
+import pixelsmart.shapes.Star;
 import pixelsmart.ui.ImagePanel;
 
 public class StencilTool extends DrawingTool {
 
     private Path2D.Double finalStrokeShape;
     private Shape shapeBehavior;
+
+    public StencilTool() {
+        shapeBehavior = new Star();
+    }
 
     @Override
     public void startAction(final ImagePanel panel) {

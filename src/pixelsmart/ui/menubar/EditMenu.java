@@ -1,4 +1,4 @@
-package pixelsmart.ui;
+package pixelsmart.ui.menubar;
 
 import java.awt.event.KeyEvent;
 

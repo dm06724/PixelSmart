@@ -1,4 +1,4 @@
-package pixelsmart.ui;
+package pixelsmart.ui.menubar;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -12,8 +12,10 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import pixelsmart.image.Image;
-import pixelsmart.image.ImageExporter;
 import pixelsmart.image.Layer;
+import pixelsmart.ui.ImagePanel;
+import pixelsmart.ui.MainWindow;
+import pixelsmart.util.ImageExporter;
 
 public class LayerMenu extends JMenu {
     private static final long serialVersionUID = -5953911805394394364L;
@@ -84,7 +86,6 @@ public class LayerMenu extends JMenu {
                 return;
             }
 
-            // Finally, add the image to a new layer
             img.addLayer(file.getName(), data);
         });
 
@@ -92,13 +93,15 @@ public class LayerMenu extends JMenu {
          * Delete Layer
          */
         JMenuItem deleteLayer = new JMenuItem("Remove Layer");
-        deleteLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        deleteLayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 
         deleteLayer.addActionListener(e -> {
-            if (ImagePanel.get().getActiveLayer() == null) {
+            Layer layer = ImagePanel.get().getActiveLayer();
+            if (layer == null) {
                 return;
             }
-            ImagePanel.get().getActiveLayer().delete();
+
+            layer.delete();
         });
 
         /**

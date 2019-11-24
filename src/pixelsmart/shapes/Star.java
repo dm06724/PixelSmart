@@ -4,9 +4,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
 public class Star implements Shape {
-    int diameter;
-    int count;
-
     public GeneralPath getPath(int startX, int startY) {
         double xPoints[] = { 9.0, 15.0, 0.0, 18.0, 3.0 };
         double yPoints[] = { 0.0, 18.0, 6.0, 6.0, 18.0 };

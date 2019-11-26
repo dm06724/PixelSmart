@@ -19,22 +19,20 @@ public class Toolbar extends JToolBar {
     JButton circle_select; // TODO lasso, not just circle
 
     public Toolbar() {
-
-        // TODO put images in /res/images
         ImageIcon pencilImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\pencil x2.png");
+                "/res/images/pencil x2.png");
         ImageIcon eraserImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\eraser x2.png");
+                "/res/images/eraser x2.png");
         ImageIcon fillImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Fill x2.png");
+                "/res/images/Fill x2.png");
         ImageIcon typeImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Type x2.png");
+                "/res/images/Type x2.png");
         ImageIcon zoomImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Zoom x2.png");
+                "/res/images/Zoom x2.png");
         ImageIcon square_selectImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select x2.png");
+                "/res/images/Select x2.png");
         ImageIcon circle_selectImage = new ImageIcon(
-                "C:\\Users\\Tyler\\Desktop\\PixelSmart\\src\\pixelsmart\\ui\\images\\Select_Circle x2.png");
+                "/res/images/Select_Circle x2.png");
 
         pencil = new JButton(pencilImage);
         eraser = new JButton(eraserImage);

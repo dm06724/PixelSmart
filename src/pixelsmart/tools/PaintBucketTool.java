@@ -25,11 +25,13 @@ public class PaintBucketTool extends DrawingTool {
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 		layer = panel.getActiveLayer();
+		int ix = layer.getImage().getWidth();
+		int iy = layer.getImage().getHeight();
+		if(mx < 0 || my < 0 || mx > ix || my > iy) return;
 		newData = layer.copyData();
 		tc = newData.getRGB(mx, my);
 		rc = getColor().getRGB();
-		if (tc == rc)
-			return;
+		if (tc == rc) return;
 		floodFill(mx, my);
 		UpdateLayerDataCommand dc = new UpdateLayerDataCommand(layer, newData);
 		CommandList.getInstance().addCommand(dc);

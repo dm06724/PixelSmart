@@ -64,11 +64,35 @@ public class CommandList {
     	BufferedImage copyData = activeLayer.copyData();
     	Graphics2D g = copyData.createGraphics();
     	g.drawImage(copyImage, 0, 0, null);
+    	//Shape shapeClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE);
+    	//Rectangle rectClip = shapeClip.getBounds();
+    	Rectangle newClip = new Rectangle(0, 0, copyImage.getWidth(), copyImage.getHeight());
+
+        SetClipShapeCommand command = new SetClipShapeCommand(newClip);
+    	UpdateLayerDataCommand dc = new UpdateLayerDataCommand(activeLayer, copyData);
+		CommandList.getInstance().addCommand(dc);
+		CommandList.getInstance().addCommand(command);
+		
+		g.dispose();
+    }
+    
+    public void cut() {
+    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE) == null) {
+    		return;
+    	}
+    	
+    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE);
+    	Rectangle rectClip = selectionClip.getBounds();
+    	Layer activeLayer = ImagePanel.get().getActiveLayer();
+    	BufferedImage copyData = activeLayer.copyData();
+    	Graphics2D g = copyData.createGraphics();
+    	g.setBackground(new Color(255,255,255,0));
+    	g.clearRect(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
+    	copyImage = activeLayer.copyData().getSubimage(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
     	
     	UpdateLayerDataCommand dc = new UpdateLayerDataCommand(activeLayer, copyData);
 		CommandList.getInstance().addCommand(dc);
-		
-		g.dispose();
+		CommandList.getInstance().addCommand(new SetClipShapeCommand(null));
     }
 
     public void addCommand(Command c) {

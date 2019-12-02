@@ -40,8 +40,7 @@ public class FileMenu extends JMenu {
                 case JOptionPane.NO_OPTION:
                     break;
                 case JOptionPane.YES_OPTION:
-                    // if (!ToolManager.getInstance().save(null))
-                    // return;
+                    promptSaveProject();
                     break;
                 }
             }
@@ -76,11 +75,39 @@ public class FileMenu extends JMenu {
         open.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
 
-            int result = fileChooser.showSaveDialog(MainWindow.getInstance());
+            int result = fileChooser.showOpenDialog(MainWindow.getInstance());
             if (result == JFileChooser.APPROVE_OPTION) {
                 // File file = fileChooser.getSelectedFile();
                 // TODO SWITCH TO IMAGE
                 // ToolManager.load(file);
+            	if (ImagePanel.get().getImage() != null) {
+                    // Prompt to save current project
+                    result = JOptionPane.showOptionDialog(MainWindow.getInstance(),
+                            "Do you want to save your current project?", "Save Current Project?",
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                    switch (result) {
+                    default:
+                    case JOptionPane.CLOSED_OPTION:
+                    case JOptionPane.CANCEL_OPTION:
+                        return;
+                    case JOptionPane.NO_OPTION:
+                        break;
+                    case JOptionPane.YES_OPTION:
+                        promptSaveProject();
+                        break;
+                    }
+                }
+            	
+            	Image loadedImage = ImageExporter.loadPSF(fileChooser.getSelectedFile());
+            	
+            	if(loadedImage!=null)
+            	{
+            		ImagePanel.get().setImage(loadedImage);
+            	}
+            	else
+            	{
+            		JOptionPane.showMessageDialog(null, "ERROR LOADING .PSF File", "ERROR", JOptionPane.ERROR_MESSAGE);
+            	}
             }
         });
 
@@ -140,7 +167,7 @@ public class FileMenu extends JMenu {
         int result = fileChooser.showSaveDialog(MainWindow.getInstance());
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            ImageExporter.saveImage(image, fileChooser.getSelectedFile());
+            ImageExporter.savePSF(image, fileChooser.getSelectedFile());
         }
     }
 }

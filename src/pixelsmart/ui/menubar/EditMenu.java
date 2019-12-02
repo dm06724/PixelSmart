@@ -13,7 +13,19 @@ public class EditMenu extends JMenu {
 
     public EditMenu() {
         super("Edit");
-
+        
+        JMenuItem copy = new JMenuItem("Copy");
+        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+        copy.addActionListener(e -> {
+            CommandList.getInstance().copy();
+        });
+        
+        JMenuItem paste = new JMenuItem("Paste");
+        paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+        paste.addActionListener(e -> {
+            CommandList.getInstance().paste();
+        });
+        
         JMenuItem undo = new JMenuItem("Undo");
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
         undo.addActionListener(e -> {
@@ -26,6 +38,8 @@ public class EditMenu extends JMenu {
             CommandList.getInstance().redo();
         });
 
+        this.add(copy);
+        this.add(paste);
         this.add(undo);
         this.add(redo);
     }

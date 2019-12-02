@@ -1,6 +1,12 @@
 package pixelsmart.commands;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
+
+import pixelsmart.image.Layer;
+import pixelsmart.ui.ImagePanel;
+import pixelsmart.tools.*;
 
 public class CommandList {
     private static final int AMOUNT_OF_COMMANDS = 50;
@@ -9,6 +15,8 @@ public class CommandList {
     private LinkedList<Command> commands = new LinkedList<Command>();
 
     private int commandIndex = 0;
+    
+    private BufferedImage copyImage;
 
     private CommandList() {
     }
@@ -29,6 +37,38 @@ public class CommandList {
         if (commandIndex >= -1 && commandIndex < commands.size() - 1) {
             commands.get(++commandIndex).execute();
         }
+    }
+    
+    public void copy() {
+    	//System.out.println("Copied!");
+    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE) == null) {
+    		return;
+    	}
+    	
+    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE);
+    	Rectangle rectClip = selectionClip.getBounds();
+    	Layer activeLayer = ImagePanel.get().getActiveLayer();
+    	
+    	copyImage = activeLayer.copyData().getSubimage(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
+    	
+    	//System.out.format("Copied Image! X: %d, Y: %d, X2: %d, Y2: %d\n", rectClip.x, rectClip.y, rectClip.width, rectClip.height);
+    }
+    
+    public void paste() {
+    	//System.out.println("Pasted!");
+    	if(copyImage == null) {
+    		return;
+    	}
+    	
+    	Layer activeLayer = ImagePanel.get().getActiveLayer();
+    	BufferedImage copyData = activeLayer.copyData();
+    	Graphics2D g = copyData.createGraphics();
+    	g.drawImage(copyImage, 0, 0, null);
+    	
+    	UpdateLayerDataCommand dc = new UpdateLayerDataCommand(activeLayer, copyData);
+		CommandList.getInstance().addCommand(dc);
+		
+		g.dispose();
     }
 
     public void addCommand(Command c) {

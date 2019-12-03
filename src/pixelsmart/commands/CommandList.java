@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import pixelsmart.image.Layer;
 import pixelsmart.ui.ImagePanel;
+import pixelsmart.util.MathUtil;
 import pixelsmart.tools.*;
 
 public class CommandList {
@@ -41,13 +42,21 @@ public class CommandList {
     
     public void copy() {
     	//System.out.println("Copied!");
-    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE) == null) {
+    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER) == null) {
     		return;
     	}
     	
-    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE);
+    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER);
     	Rectangle rectClip = selectionClip.getBounds();
     	Layer activeLayer = ImagePanel.get().getActiveLayer();
+    	
+    	rectClip.x = MathUtil.clamp(rectClip.x, 0, ImagePanel.get().getActiveLayer().getWidth());
+    	rectClip.y = MathUtil.clamp(rectClip.y, 0, ImagePanel.get().getActiveLayer().getHeight());
+    	
+    	if(rectClip.x + rectClip.width > ImagePanel.get().getActiveLayer().getWidth())
+    		rectClip.width = ImagePanel.get().getActiveLayer().getWidth()-rectClip.x;
+    	if(rectClip.y + rectClip.height > ImagePanel.get().getActiveLayer().getHeight())
+    		rectClip.height = ImagePanel.get().getActiveLayer().getHeight()-rectClip.y;
     	
     	copyImage = activeLayer.copyData().getSubimage(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
     	
@@ -77,16 +86,25 @@ public class CommandList {
     }
     
     public void cut() {
-    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE) == null) {
+    	if(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER) == null) {
     		return;
     	}
     	
-    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_IMAGE);
+    	Shape selectionClip = ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER);
     	Rectangle rectClip = selectionClip.getBounds();
     	Layer activeLayer = ImagePanel.get().getActiveLayer();
     	BufferedImage copyData = activeLayer.copyData();
     	Graphics2D g = copyData.createGraphics();
     	g.setBackground(new Color(255,255,255,0));
+
+    	rectClip.x = MathUtil.clamp(rectClip.x, 0, ImagePanel.get().getActiveLayer().getWidth());
+    	rectClip.y = MathUtil.clamp(rectClip.y, 0, ImagePanel.get().getActiveLayer().getHeight());
+    	
+    	if(rectClip.x + rectClip.width > ImagePanel.get().getActiveLayer().getWidth())
+    		rectClip.width = ImagePanel.get().getActiveLayer().getWidth()-rectClip.x;
+    	if(rectClip.y + rectClip.height > ImagePanel.get().getActiveLayer().getHeight())
+    		rectClip.height = ImagePanel.get().getActiveLayer().getHeight()-rectClip.y;
+    	
     	g.clearRect(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
     	copyImage = activeLayer.copyData().getSubimage(rectClip.x, rectClip.y, rectClip.width, rectClip.height);
     	

@@ -3,6 +3,7 @@ package pixelsmart.tools;
 import java.awt.Color;
 
 import pixelsmart.ui.ImagePanel;
+import pixelsmart.ui.MainWindow;
 
 public class ToolManager {
 
@@ -44,6 +45,7 @@ public class ToolManager {
 
     public void setPrimaryBrushColor(Color color) {
         this.primaryBrushColor = color;
+        MainWindow.getInstance().setColorButtonColor(color);
     }
 
     public void setSecondaryBrushColor(Color color) {

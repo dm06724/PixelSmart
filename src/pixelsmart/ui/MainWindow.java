@@ -2,6 +2,7 @@ package pixelsmart.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -19,6 +20,7 @@ public class MainWindow extends JFrame {
     private JPanel contentPane;
     private ImagePanel imagePanel;
     private static MainWindow currentWindow;
+    private JButton colorWheelButton;
 
     /**
      * Create the frame.
@@ -38,7 +40,7 @@ public class MainWindow extends JFrame {
 
         JToolBar attributeToolbar = new JToolBar("Tools");
 
-        JButton colorWheelButton = new JButton();
+        colorWheelButton = new JButton();
         colorWheelButton.addActionListener(e -> {
             if (ToolManager.getInstance() == null) {
                 return;
@@ -49,6 +51,8 @@ public class MainWindow extends JFrame {
             ToolManager.getInstance().setPrimaryBrushColor(color);
         });
 
+        colorWheelButton.setPreferredSize(new Dimension(40, 40));
+        colorWheelButton.setBackground(Color.black);
         attributeToolbar.add(new JLabel("Color"));
         attributeToolbar.add(colorWheelButton);
         attributeToolbar.add(new BrushSizePanel());
@@ -94,6 +98,10 @@ public class MainWindow extends JFrame {
 
     private boolean running() {
         return this.isDisplayable();
+    }
+    
+    public void setColorButtonColor(Color c) {
+    	colorWheelButton.setBackground(c);
     }
 
 }

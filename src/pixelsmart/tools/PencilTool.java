@@ -2,6 +2,7 @@ package pixelsmart.tools;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
@@ -24,6 +25,8 @@ public class PencilTool extends DrawingTool {
 
         finalStrokeShape = new Path2D.Double();
         finalStrokeShape.moveTo(mx, my);
+        
+        layerAppliedTo = panel.getActiveLayer();
     }
 
     @Override
@@ -60,5 +63,20 @@ public class PencilTool extends DrawingTool {
 
         final UpdateLayerDataCommand c = new UpdateLayerDataCommand(layer, newData);
         CommandList.getInstance().addCommand(c);
+        layerAppliedTo = null;
     }
+
+    public void drawTemporaryImage(Graphics2D g) {
+		// TODO Auto-generated method stub
+    	if(finalStrokeShape!=null)
+    	{
+			g.setClip(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER));
+	
+	        g.setColor(getColor());
+	        final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	        g.setStroke(stroke);
+	
+	        g.draw(finalStrokeShape);
+    	}
+	}
 }

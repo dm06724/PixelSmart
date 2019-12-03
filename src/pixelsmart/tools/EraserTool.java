@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
@@ -25,6 +26,8 @@ public class EraserTool extends DrawingTool {
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 		finalStrokeShape.moveTo(mx, my);
+		
+		layerAppliedTo = panel.getActiveLayer();
 	}
 
 	@Override
@@ -61,5 +64,21 @@ public class EraserTool extends DrawingTool {
 		CommandList.getInstance().addCommand(c);
 
 		g.dispose();
+		layerAppliedTo = null;
+	}
+
+	public void drawTemporaryImage(Graphics2D g) {
+		// TODO Auto-generated method stub
+		if(finalStrokeShape != null)
+		{
+			g.setClip(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER));
+	
+			g.setColor(new Color(0, 0, 0, 0));
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+	        final BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	        g.setStroke(stroke);
+	
+	        g.draw(finalStrokeShape);
+		}
 	}
 }

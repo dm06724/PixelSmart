@@ -1,5 +1,6 @@
 package pixelsmart.tools;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
@@ -70,5 +71,8 @@ public class PaintBucketTool extends DrawingTool {
 			queue.add(new Point(p.x, p.y + 1));
 			queue.add(new Point(p.x, p.y - 1));
 		}
+	}
+
+	public void drawTemporaryImage(Graphics2D g) {
 	}
 }

@@ -28,6 +28,7 @@ public class StencilTool extends DrawingTool {
         }
 
         finalStrokeShape = new Path2D.Double();
+        layerAppliedTo = panel.getActiveLayer();
     }
 
     @Override
@@ -66,5 +67,22 @@ public class StencilTool extends DrawingTool {
         CommandList.getInstance().addCommand(c);
 
         g.dispose();
+        
+        layerAppliedTo = null;
     }
+
+	public void drawTemporaryImage(Graphics2D g) {
+		// TODO Auto-generated method stub
+		if(finalStrokeShape!=null)
+		{
+	        g.setClip(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER));
+	        
+	        g.setColor(getColor());
+	        final BasicStroke stroke = new BasicStroke(getBrushSize()/10);
+	        g.setStroke(stroke);
+	
+	        g.draw(finalStrokeShape);
+	        g.fill(finalStrokeShape);
+		}
+	}
 }

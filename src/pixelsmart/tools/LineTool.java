@@ -2,6 +2,8 @@ package pixelsmart.tools;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 import pixelsmart.commands.CommandList;
@@ -21,6 +23,7 @@ public class LineTool extends DrawingTool {
 
         startMX = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
         startMY = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+        layerAppliedTo = panel.getActiveLayer();
     }
 
     @Override
@@ -49,6 +52,22 @@ public class LineTool extends DrawingTool {
 
         UpdateLayerDataCommand command = new UpdateLayerDataCommand(layer, newData);
         CommandList.getInstance().addCommand(command);
+        layerAppliedTo = null;
     }
+
+    public void drawTemporaryImage(Graphics2D g) {
+		// TODO Auto-generated method stub
+    	
+		int mx = ImagePanel.get().getMouseX(ImagePanel.RELATIVE_TO_LAYER);
+        int my = ImagePanel.get().getMouseY(ImagePanel.RELATIVE_TO_LAYER);
+
+        g.setClip(ImagePanel.get().getClip(ImagePanel.RELATIVE_TO_LAYER));
+
+        g.setColor(ToolManager.getInstance().getPrimaryBrushColor());
+        BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g.setStroke(stroke);
+
+        g.drawLine(startMX, startMY, mx, my);
+	}
 
 }

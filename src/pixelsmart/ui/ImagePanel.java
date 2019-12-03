@@ -1,5 +1,6 @@
 package pixelsmart.ui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -20,6 +21,8 @@ import pixelsmart.events.EventHandler;
 import pixelsmart.events.EventListener;
 import pixelsmart.image.Image;
 import pixelsmart.image.Layer;
+import pixelsmart.tools.DrawingTool;
+import pixelsmart.tools.ToolManager;
 import pixelsmart.util.MathUtil;
 
 public class ImagePanel extends JPanel {
@@ -89,9 +92,51 @@ public class ImagePanel extends JPanel {
 
         g.setPaint(null);
 
+        DrawingTool drawThis = null;
+        if(ToolManager.getInstance().getTool() instanceof DrawingTool)
+        {
+        	drawThis = (DrawingTool)ToolManager.getInstance().getTool();
+        }
+        
+        BufferedImage aggregatedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D combinedGraphics = aggregatedImage.createGraphics();
+        
         // Draw the layers
-        g.drawImage(image.getAggregatedData(), rect.x, rect.y, rect.width, rect.height, null);
-
+        for(Layer l : image)
+    	{
+        	if(l.isVisible())
+        	{
+	        	if(drawThis != null)
+	        	{
+	        		if(drawThis.layerAppliedTo == l)
+	        		{
+	        			//create temp buff image, draw into that
+	        			BufferedImage tempBuffImage = l.copyData();
+	        			drawThis.drawTemporaryImage(tempBuffImage.createGraphics());
+	        			combinedGraphics.drawImage(tempBuffImage, l.getX(), l.getY(), l.getWidth(), l.getHeight(), null);
+	        		}
+	        		else
+	        		{
+	        			combinedGraphics.drawImage(l.getData(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), null);
+	        		}
+	        	}
+	        	else
+	        	{
+	        		combinedGraphics.drawImage(l.getData(), l.getX(), l.getY(), l.getWidth(), l.getHeight(), null);
+	        	}
+        	}
+        	
+    	}
+        
+        g.drawImage(aggregatedImage, rect.x, rect.y, rect.width, rect.height, null);
+        
+        //if(drawThis!=null)
+        //{
+        //	drawThis.drawTemporaryImage(g);
+        //}
+        
+        g.setStroke(new BasicStroke());
+        
         // Draw a box around active layer
         if (activeLayer != null) {
             Rectangle layerRect = getLayerViewRect(activeLayer);

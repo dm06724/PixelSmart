@@ -63,6 +63,7 @@ public class LayerList extends JList<Layer> {
 
     private void updateListeners(Image image) {
         image.addLayersModifiedListener(i -> updateList(i));
+        updateList(image);
     }
 
     public void updateSelection() {

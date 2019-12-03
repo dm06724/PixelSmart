@@ -2,6 +2,7 @@ package pixelsmart.tools;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
@@ -49,7 +50,7 @@ public class EraserTool extends DrawingTool {
 		Graphics2D g = newData.createGraphics();
 
 		g.setClip(panel.getClip(ImagePanel.RELATIVE_TO_LAYER));
-
+		g.setColor(new Color(0, 0, 0, 0));
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 		BasicStroke stroke = new BasicStroke(getBrushSize(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 		g.setStroke(stroke);

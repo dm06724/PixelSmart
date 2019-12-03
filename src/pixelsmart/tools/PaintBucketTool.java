@@ -1,6 +1,7 @@
 package pixelsmart.tools;
 
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,6 +16,7 @@ public class PaintBucketTool extends DrawingTool {
 	BufferedImage newData;
 	Layer layer;
 	int tc, rc;
+	Shape clipShape;
 
 	@Override
 	public void finishAction(final ImagePanel panel) {
@@ -22,6 +24,8 @@ public class PaintBucketTool extends DrawingTool {
 			return;
 		}
 
+		clipShape = panel.getClip(ImagePanel.RELATIVE_TO_LAYER);
+		
 		int mx = panel.getMouseX(ImagePanel.RELATIVE_TO_LAYER);
 		int my = panel.getMouseY(ImagePanel.RELATIVE_TO_LAYER);
 		layer = panel.getActiveLayer();
@@ -40,7 +44,8 @@ public class PaintBucketTool extends DrawingTool {
 	public void floodFill(int x, int y) {
 		Queue<Point> queue = new LinkedList<Point>();
 		queue.add(new Point(x, y));
-
+		
+		
 		while (!queue.isEmpty()) {
 			Point p = queue.remove();
 			if (p.x < 0)
@@ -51,6 +56,13 @@ public class PaintBucketTool extends DrawingTool {
 				continue;
 			if (newData.getRGB(p.x, p.y) != tc)
 				continue;
+			
+			if(clipShape!=null)
+			{
+				if(!clipShape.contains(p.x, p.y))
+					continue;
+			}
+			
 			newData.setRGB(p.x, p.y, rc);
 			// System.out.println("X: " + p.x + " Y: " + p.y + " RGB: " + rc);
 			queue.add(new Point(p.x + 1, p.y));

@@ -2,10 +2,15 @@ package pixelsmart.util;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -72,14 +77,15 @@ public class ImageExporter {
 		// everything will be in a try catch cause I don't want to
 		// write a try catch for each write.
 		try {
-			FileWriter fw = new FileWriter(file);
+			FileOutputStream fw = new FileOutputStream(file);
 
 			// save header
 			String HeaderString = getHeaderString();
 			String LayersString = getLayersString();
 
-			fw.write(HeaderString);
-			fw.write(LayersString);
+			
+			fw.write(HeaderString.getBytes(), 0, HeaderString.length());
+			fw.write(LayersString.getBytes(), 0, LayersString.length());
 
 			fw.close();
 		} catch (Exception e) {
@@ -250,22 +256,27 @@ public class ImageExporter {
 		ArrayList<Layer> layers = img.getLayers();
 
 		for (int i = 0; i < layers.size(); i++) {
+			Layer currentLayer = layers.get(i);
 			k += "la";
-			k += MathUtil.intToByteString(layers.get(i).getX());
-			k += MathUtil.intToByteString(layers.get(i).getY());
-			k += MathUtil.intToByteString(layers.get(i).getWidth());
-			k += MathUtil.intToByteString(layers.get(i).getHeight());
-			k += MathUtil.intToByteString(layers.get(i).getName().length());
-			k += layers.get(i).getName();
-			k += layers.get(i).isVisible()==true ? (byte)1 : (byte)0;
-			k += layers.get(i).isBaseLayer()==true ? (byte)1 : (byte)0;
+			k += MathUtil.intToByteString(currentLayer.getX());
+			k += MathUtil.intToByteString(currentLayer.getY());
+			k += MathUtil.intToByteString(currentLayer.getWidth());
+			k += MathUtil.intToByteString(currentLayer.getHeight());
+			k += MathUtil.intToByteString(currentLayer.getName().length());
+			k += currentLayer.getName();
+			k += currentLayer.isVisible()==true ? (byte)1 : (byte)0;
+			k += currentLayer.isBaseLayer()==true ? (byte)1 : (byte)0;
 
 			k += "pix";
-			for (int y = 0; y < layers.get(i).getHeight(); y++) {
-				for (int x = 0; x < layers.get(i).getWidth(); x++) {
-					k += MathUtil.intToByteString(layers.get(i).getData().getRGB(x, y));
-				}
-			}
+			
+			int[] pixels = ((DataBufferInt) currentLayer.getData().getRaster().getDataBuffer()).getData();
+			
+			ByteBuffer buf = ByteBuffer.allocate(pixels.length*4);
+			IntBuffer originalValues = buf.asIntBuffer();
+			originalValues.put(pixels);
+			
+			byte[] finalArray = buf.array();
+			k += new String(finalArray);
 		}
 
 		return k;

@@ -9,6 +9,7 @@ import pixelsmart.commands.CommandList;
 import pixelsmart.commands.UpdateLayerDataCommand;
 import pixelsmart.image.Layer;
 import pixelsmart.shapes.Shape;
+import pixelsmart.shapes.ShapeFactory;
 import pixelsmart.shapes.Star;
 import pixelsmart.ui.ImagePanel;
 
@@ -18,7 +19,14 @@ public class StencilTool extends DrawingTool {
     private Shape shapeBehavior;
 
     public StencilTool() {
-        shapeBehavior = new Star();
+    	shapeBehavior = new Star();
+    }
+    
+    public StencilTool(String s) {
+    	ShapeFactory shapes = new ShapeFactory();
+    	Shape shape = shapes.getShape(s, 0, 0);
+    	int size = ToolManager.getInstance().getBrushSize();
+    	shapeBehavior = shape;
     }
 
     @Override

@@ -56,6 +56,7 @@ public class MainWindow extends JFrame {
         attributeToolbar.add(new JLabel("Color"));
         attributeToolbar.add(colorWheelButton);
         attributeToolbar.add(new BrushSizePanel());
+        attributeToolbar.add(new StencilShapePanel());
 
         this.setJMenuBar(new MenuBar());
 

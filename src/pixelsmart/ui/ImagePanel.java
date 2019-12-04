@@ -406,7 +406,7 @@ public class ImagePanel extends JPanel {
     }
 
     public Rectangle getImageViewRect() {
-        return new Rectangle(getImageViewOffsetX(), getImageViewOffsetY(), getImageViewWidth(), getImageViewWidth());
+        return new Rectangle(getImageViewOffsetX(), getImageViewOffsetY(), getImageViewWidth(), getImageViewHeight());
     }
 
     public Rectangle getLayerViewRect(Layer layer) {

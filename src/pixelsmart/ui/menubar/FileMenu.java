@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -46,10 +47,15 @@ public class FileMenu extends JMenu {
             }
             JTextField widthInput = new JTextField();
             JTextField heightInput = new JTextField();
+            
+            JLabel widthLabel = new JLabel("Width");
+            JLabel heightLabel = new JLabel("Height");
+            
+            widthInput.setToolTipText("Width");
             widthInput.setText("64");
             heightInput.setText("64");
 
-            final JComponent[] inputs = new JComponent[] { widthInput, heightInput };
+            final JComponent[] inputs = new JComponent[] { widthLabel, widthInput, heightLabel, heightInput };
 
             int result = JOptionPane.showConfirmDialog(MainWindow.getInstance(), inputs, "Create New Project",
                     JOptionPane.PLAIN_MESSAGE);

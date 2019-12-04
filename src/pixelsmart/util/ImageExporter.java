@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -58,7 +59,7 @@ public class ImageExporter {
 	{
 		Image img = null;
 		try {
-			FileReader fr = new FileReader(file);
+			FileInputStream fr = new FileInputStream(file);
 			
 			img = loadHeader(fr);
 			if(img!=null)
@@ -93,7 +94,15 @@ public class ImageExporter {
 		}
 	}
 
-	private static Image loadHeader(FileReader fr)
+	private static String getStringFromBytes(byte[] b)
+	{
+		String n = "";
+		for(int i=0; i<b.length; i++)
+			n += (char)(b[i] & 0xFF);
+		
+		return n;
+	}
+	private static Image loadHeader(FileInputStream fr)
 	{
 		try
 		{
@@ -104,22 +113,15 @@ public class ImageExporter {
 			testThing += (char)fr.read();
 			testThing += (char)fr.read();
 			
+			
 			if(!testThing.equalsIgnoreCase("psf"))
 			{
 				return null;
 			}
 	
-			String widthVal = "";
-			widthVal += (char)fr.read();
-			widthVal += (char)fr.read();
-			widthVal += (char)fr.read();
-			widthVal += (char)fr.read();
+			String widthVal = getStringFromBytes(fr.readNBytes(4));
 			
-			String heightVal = "";
-			heightVal += (char)fr.read();
-			heightVal += (char)fr.read();
-			heightVal += (char)fr.read();
-			heightVal += (char)fr.read();
+			String heightVal = getStringFromBytes(fr.readNBytes(4));
 			
 			Image img = new Image(MathUtil.byteStringToInt(widthVal), MathUtil.byteStringToInt(heightVal));
 			
@@ -148,58 +150,36 @@ public class ImageExporter {
 		return k;
 	}
 
-	private static void loadLayers(Image img, FileReader fr)
+	private static void loadLayers(Image img, FileInputStream fr)
 	{
 		try
 		{
 			//note, even though the amount of layers is considered apart of the header,
 			//it is here for convenience
 			
-			String layers = "";
-			layers += (char)fr.read();
-			layers += (char)fr.read();
-			layers += (char)fr.read();
-			layers += (char)fr.read();
-			
+			String layers = getStringFromBytes(fr.readNBytes(4));
 			int addAmount = MathUtil.byteStringToInt(layers);
+			
 			for(int i=0; i<addAmount; i++)
 			{
 				//for now, skip the identifier for layers in a file
 				fr.read();
 				fr.read();
-				String xString = "";
-				xString += (char)fr.read();
-				xString += (char)fr.read();
-				xString += (char)fr.read();
-				xString += (char)fr.read();
+				
+				String xString = getStringFromBytes(fr.readNBytes(4));
+				
 				int x = MathUtil.byteStringToInt(xString);
 				
-				String yString = "";
-				yString += (char)fr.read();
-				yString += (char)fr.read();
-				yString += (char)fr.read();
-				yString += (char)fr.read();
+				String yString = getStringFromBytes(fr.readNBytes(4));
 				int y = MathUtil.byteStringToInt(yString);
 				
-				String widString = "";
-				widString += (char)fr.read();
-				widString += (char)fr.read();
-				widString += (char)fr.read();
-				widString += (char)fr.read();
+				String widString = getStringFromBytes(fr.readNBytes(4));
 				int width = MathUtil.byteStringToInt(widString);
 				
-				String heiString = "";
-				heiString += (char)fr.read();
-				heiString += (char)fr.read();
-				heiString += (char)fr.read();
-				heiString += (char)fr.read();
+				String heiString = getStringFromBytes(fr.readNBytes(4));
 				int height = MathUtil.byteStringToInt(heiString);
 				
-				String nameSizeString = "";
-				nameSizeString += (char)fr.read();
-				nameSizeString += (char)fr.read();
-				nameSizeString += (char)fr.read();
-				nameSizeString += (char)fr.read();
+				String nameSizeString = getStringFromBytes(fr.readNBytes(4));
 				int nameSize = MathUtil.byteStringToInt(nameSizeString);
 				
 				String layerName = "";
@@ -211,7 +191,25 @@ public class ImageExporter {
 				boolean isVis = ((char)fr.read() == '1');
 				boolean isBase = ((char)fr.read() == '1');
 				
-				img.addLayer(layerName);
+				if(i==0)
+				{
+					//must get rid of original base layer
+					System.out.println("REMOVING TEMP LAYER");
+					String tempLayerName = layerName+"1";
+					img.addLayer(tempLayerName);
+					img.getLayerByName(tempLayerName).setAsBaseLayer();
+					
+					img.removeLayer("Layer 1");
+				
+					img.addLayer(layerName);
+					img.getLayerByName(layerName).setAsBaseLayer();
+					img.removeLayer(tempLayerName);
+				}
+				else
+				{
+					img.addLayer(layerName);
+				}
+				
 				Layer p = img.getLayerByIndex(i);
 				p.setVisible(isVis);
 				if(isBase)
@@ -226,16 +224,12 @@ public class ImageExporter {
 				fr.read();
 				fr.read();
 				fr.read();
+				
 				for(int tempY = 0; tempY < height; tempY++)
 				{
 					for(int tempX = 0; tempX < width; tempX++)
 					{
-						String colorString = "";
-						
-						colorString += (char)fr.read();
-						colorString += (char)fr.read();
-						colorString += (char)fr.read();
-						colorString += (char)fr.read();
+						String colorString = getStringFromBytes(fr.readNBytes(4));
 						
 						int colorVal = MathUtil.byteStringToInt(colorString);
 						Color c = new Color(colorVal, true);

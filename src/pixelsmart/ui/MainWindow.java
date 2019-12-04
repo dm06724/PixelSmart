@@ -61,6 +61,7 @@ public class MainWindow extends JFrame {
 
         LayerList layerList = new LayerList(imagePanel);
 
+        contentPane.add(new stencilBar(), BorderLayout.WEST);
         contentPane.add(new Toolbar() ,BorderLayout.NORTH);
         contentPane.add(attributeToolbar, BorderLayout.SOUTH);
         contentPane.add(layerList, BorderLayout.EAST);

@@ -69,7 +69,7 @@ public class ImageExporter {
 			fr.close();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return img;
 	}
@@ -90,7 +90,7 @@ public class ImageExporter {
 
 			fw.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -129,7 +129,7 @@ public class ImageExporter {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return null;
 	}
@@ -194,7 +194,6 @@ public class ImageExporter {
 				if(i==0)
 				{
 					//must get rid of original base layer
-					System.out.println("REMOVING TEMP LAYER");
 					String tempLayerName = layerName+"1";
 					img.addLayer(tempLayerName);
 					img.getLayerByName(tempLayerName).setAsBaseLayer();
@@ -241,7 +240,7 @@ public class ImageExporter {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	private static String getLayersString() {

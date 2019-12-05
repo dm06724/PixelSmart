@@ -1,7 +1,8 @@
 package pixelsmart.ui;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import pixelsmart.tools.StencilTool;
@@ -12,36 +13,30 @@ public class StencilShapePanel extends JPanel {
 	JButton circle;
 	JButton splash;
 	JButton star;
-	JLabel label;
-	
+
 	public StencilShapePanel() {
-		
-		circle = new JButton("Circle");
-		
+
+		ImageIcon circleImage = new ImageIcon("res/images/circle.png");
+		ImageIcon splashImage = new ImageIcon("res/images/splash.png");
+		ImageIcon starImage = new ImageIcon("res/images/star.png");
+
+		circle = new JButton(circleImage);
+		splash = new JButton(splashImage);
+		star = new JButton(starImage);
+
 		circle.addActionListener(e -> {
 			ToolManager.getInstance().setTool(new StencilTool("circle1"));
-			System.out.println("circle");
 		});
-		
-		splash = new JButton("Splash");
-		
+
 		splash.addActionListener(e -> {
 			ToolManager.getInstance().setTool(new StencilTool("splash1"));
-			System.out.println("splash");
 		});
-		
-		star = new JButton("Star");
 
 		star.addActionListener(e -> {
 			ToolManager.getInstance().setTool(new StencilTool("star"));
-			System.out.println("star");
 		});
-		
-		label = new JLabel("Stencil Shape:");
-		label.setAlignmentY(label.CENTER_ALIGNMENT);
-		
-		this.add(label);
-		
+
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.add(circle);
 		this.add(splash);
 		this.add(star);

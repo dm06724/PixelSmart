@@ -18,7 +18,7 @@ import pixelsmart.tools.StencilTool;
 import pixelsmart.tools.ToolManager;
 import pixelsmart.tools.ZoomTool;
 
-public class ToolMenu extends JMenu /* Will change to JToolBar - Tyler */ {
+public class ToolMenu extends JMenu{
     private static final long serialVersionUID = 3180545437387906156L;
 
     public ToolMenu() {

@@ -56,13 +56,14 @@ public class MainWindow extends JFrame {
         attributeToolbar.add(new JLabel("Color"));
         attributeToolbar.add(colorWheelButton);
         attributeToolbar.add(new BrushSizePanel());
-        attributeToolbar.add(new StencilShapePanel());
+        //attributeToolbar.add(new StencilShapePanel());
 
         this.setJMenuBar(new MenuBar());
 
         LayerList layerList = new LayerList(imagePanel);
 
-        contentPane.add(new stencilBar(), BorderLayout.WEST);
+        //contentPane.add(new stencilBar(), BorderLayout.WEST); //Tyler's OG StencilBar
+        contentPane.add(new StencilShapePanel(), BorderLayout.WEST);
         contentPane.add(new Toolbar() ,BorderLayout.NORTH);
         contentPane.add(attributeToolbar, BorderLayout.SOUTH);
         contentPane.add(layerList, BorderLayout.EAST);

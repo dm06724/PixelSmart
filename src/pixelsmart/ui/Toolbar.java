@@ -73,12 +73,12 @@ public class Toolbar extends JToolBar {
 
                 this.add(pencil);
                 this.add(eraser);
-                this.add(fill);
-                this.add(color_picker);
                 this.add(line);
-                this.add(zoom);
+                this.add(color_picker);
+                this.add(fill);
                 this.add(square_select);
                 this.add(lasso_select);
                 this.add(move);
+                this.add(zoom);
         }
 }

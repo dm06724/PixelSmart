@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 import pixelsmart.image.Layer;
+import pixelsmart.image.Image;
 import pixelsmart.ui.ImagePanel;
 import pixelsmart.util.MathUtil;
 import pixelsmart.tools.*;
@@ -69,6 +70,16 @@ public class CommandList {
     		return;
     	}
     	
+    	Image img = ImagePanel.get().getImage();
+    	String name = "";
+    	
+    	if(img.containsLayer(x -> x.getName().equals("New Layer"))) {
+    		name = "New Layer " + img.layerCount();
+    	}else {
+    		name = "New Layer";
+    	}
+    	img.addLayer(name);
+    	ImagePanel.get().setActiveLayer(name);
     	Layer activeLayer = ImagePanel.get().getActiveLayer();
     	BufferedImage copyData = activeLayer.copyData();
     	Graphics2D g = copyData.createGraphics();
@@ -79,8 +90,8 @@ public class CommandList {
 
         SetClipShapeCommand command = new SetClipShapeCommand(newClip);
     	UpdateLayerDataCommand dc = new UpdateLayerDataCommand(activeLayer, copyData);
+    	CommandList.getInstance().addCommand(command);
 		CommandList.getInstance().addCommand(dc);
-		CommandList.getInstance().addCommand(command);
 		
 		g.dispose();
     }

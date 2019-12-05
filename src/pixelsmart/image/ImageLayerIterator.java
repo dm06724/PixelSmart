@@ -21,5 +21,4 @@ public class ImageLayerIterator implements Iterator<Layer> {
     public Layer next() {
         return image.getLayerByIndex(index++);
     }
-
 }

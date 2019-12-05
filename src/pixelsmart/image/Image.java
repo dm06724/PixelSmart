@@ -153,7 +153,7 @@ public class Image implements Iterable<Layer> {
 
     @Override
     public Iterator<Layer> iterator() {
-        return layers.iterator();
+        return new ImageLayerIterator(this);
     }
 
     public Layer findLayer(Predicate<Layer> pred) {

@@ -2,7 +2,7 @@ package pixelsmart.shapes;
 
 public class ShapeFactory {
 
-	public Shape getShape(String shapeType, int x, int y) {
+	public Shape getShape(String shapeType) {
 
 		if (shapeType == null) {
 			return null;

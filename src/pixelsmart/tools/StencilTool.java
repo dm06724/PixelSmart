@@ -24,7 +24,7 @@ public class StencilTool extends DrawingTool {
     
     public StencilTool(String s) {
     	ShapeFactory shapes = new ShapeFactory();
-    	Shape shape = shapes.getShape(s, 0, 0);
+    	Shape shape = shapes.getShape(s);
     	int size = ToolManager.getInstance().getBrushSize();
     	shapeBehavior = shape;
     }
